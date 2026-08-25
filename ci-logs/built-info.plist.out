@@ -1,8 +1,3 @@
-+ APP=build/DerivedData/Build/Products/Debug-iphonesimulator/PanJi.app
-+ ls -d build/DerivedData/Build/Products/Debug-iphonesimulator/PanJi.app
-build/DerivedData/Build/Products/Debug-iphonesimulator/PanJi.app
-+ plutil -p build/DerivedData/Build/Products/Debug-iphonesimulator/PanJi.app/Info.plist
-+ tee built-info.plist.out
 {
   "APIBaseURL" => "http://localhost:3000"
   "BuildMachineOSBuild" => "24G720"
@@ -57,24 +52,3 @@ build/DerivedData/Build/Products/Debug-iphonesimulator/PanJi.app
     0 => "UIInterfaceOrientationPortrait"
   ]
 }
-+ grep APIBaseURL built-info.plist.out
-  "APIBaseURL" => "http://localhost:3000"
-++ xcrun simctl list devices available
-++ grep -m1 -i iphone
-++ grep -oE '\([0-9A-F-]{36}\)'
-++ head -1
-++ tr -d '()'
-+ DEVICE=9E2C2CF0-7DD4-4B9D-B6CE-63C9E42B95A7
-+ echo DEVICE=9E2C2CF0-7DD4-4B9D-B6CE-63C9E42B95A7
-DEVICE=9E2C2CF0-7DD4-4B9D-B6CE-63C9E42B95A7
-+ '[' -z 9E2C2CF0-7DD4-4B9D-B6CE-63C9E42B95A7 ']'
-+ xcrun simctl boot 9E2C2CF0-7DD4-4B9D-B6CE-63C9E42B95A7
-+ xcrun simctl install 9E2C2CF0-7DD4-4B9D-B6CE-63C9E42B95A7 build/DerivedData/Build/Products/Debug-iphonesimulator/PanJi.app
-+ xcrun simctl launch 9E2C2CF0-7DD4-4B9D-B6CE-63C9E42B95A7 com.panji.app
-com.panji.app: 7543
-+ sleep 5
-+ xcrun simctl io 9E2C2CF0-7DD4-4B9D-B6CE-63C9E42B95A7 screenshot m0-003-simulator.png
-Detected file type 'PNG' from extension
-Wrote screenshot to: m0-003-simulator.png
-+ echo STEP4_ALL_OK
-STEP4_ALL_OK
