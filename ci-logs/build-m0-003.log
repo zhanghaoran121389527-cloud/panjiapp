@@ -1,0 +1,13 @@
+Command line invocation:
+    /Applications/Xcode_16.4.app/Contents/Developer/usr/bin/xcodebuild -project PanJi.xcodeproj -scheme PanJi -configuration Debug -destination "platform=iOS Simulator,name=iPhone 15" -derivedDataPath build/DerivedData build
+
+2026-08-25 09:27:08.133 xcodebuild[1397:6825] Writing error result bundle to /var/folders/_5/zjnzxgh147qcg3bb5cg2wvqw0000gn/T/ResultBundle_2026-25-08_09-27-0008.xcresult
+xcodebuild: error: Unable to find a device matching the provided destination specifier:
+		{ platform:iOS Simulator, OS:latest, name:iPhone 15 }
+
+	The requested device could not be found because no available devices matched the request.
+
+	Available destinations for the "PanJi" scheme:
+		{ platform:macOS, arch:arm64, variant:Designed for [iPad,iPhone], id:23eacbe8135e64006ff5f3cc00c3e59c17c0af89, name:My Mac }
+		{ platform:iOS, id:dvtdevice-DVTiPhonePlaceholder-iphoneos:placeholder, name:Any iOS Device }
+		{ platform:iOS Simulator, id:dvtdevice-DVTiOSDeviceSimulatorPlaceholder-iphonesimulator:placeholder, name:Any iOS Simulator Device }
