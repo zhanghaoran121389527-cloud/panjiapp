@@ -25,7 +25,7 @@
 | M1-005 | 盘玩记录接口 POST/GET（多图+补录） | BE | M1-001, M1-004 | DONE |
 | M1-006 | 网络层 + 登录/昵称流程 | iOS | M0-003, M0-004, M1-002 | DONE |
 | M1-007 | 收藏柜 | iOS | M1-003, M1-006 | DONE |
-| M1-008 | 创建玩物（创建后自动进详情） | iOS | M1-003, M1-004, M1-006, M1-007 | REVIEW |
+| M1-008 | 创建玩物（创建后自动进详情） | iOS | M1-003, M1-004, M1-006, M1-007 | IN_PROGRESS |
 | M1-009 | 玩物详情 + 成长时间轴 | iOS | M1-003, M1-005, M1-006, M1-007 | READY |
 | M1-010 | 盘玩记录（多图 + 补录） | iOS | M1-004, M1-005, M1-006, M1-009 | BACKLOG |
 | M1-011 | 编辑/删除玩物 | iOS | M1-003, M1-004, M1-006, M1-008, M1-009 | BACKLOG |
@@ -305,7 +305,8 @@
 - 【任务编号】M1-008
 - 【任务名称】创建玩物（创建后自动进详情）
 - 【负责人】iOS
-- 【状态】REVIEW
+- 【状态】IN_PROGRESS
+- 【阻塞类型】代码缺陷（云端 CI 编译失败，退回整改）
 - 【目标】约 20 秒、≤3 步创建玩物；创建成功自动进入详情。
 - 【前置依赖】M1-003、M1-004、M1-006、M1-007
 - 【输入】API_CONTRACT §3.6/3.10、M0-004 线框
@@ -316,6 +317,7 @@
 - 【QA要求】B08/B09/B10/B12 冒烟（v2.1 编号：上传失败/防连点/名称校验/无封面创建）；20 秒体验观察项
 - 【交接对象】iOS（M1-009/M1-011，表单复用）、QA
 - 【审核记录·总控初审】实读核验：CreateItemStore 两段式（先 3.10 上传拿相对 URL 缓存，创建失败重试不重传）、trim→null、名称 1~50、品类必选、防连点（submitting/uploadingCover 双态）、入手日期北京时间 + 上限=北京今天 ✓；APIClient.uploadImage multipart 字段 `file` + Bearer ✓；CreateItemView 原生 PhotosPicker（零第三方库）、封面跳过/更换/移除、更多信息折叠、错误态齐备 ✓。Network/DesignSystem 触点=最小必要已申报，接受。**剩余 = 云端 CI 构建证据（推送后）+ QA（B08/B09/B10/B12 + 20 秒观察）**。
+- 【审核记录·退回】总控独立复核 CI：run #32843110073（head 416164b，M1-008 代码）**BUILD FAILED**——`CreateItemStore.swift:74` 等 3 文件编译失败（6 处：CreateItemView/CreateItemStore/ItemDetailPlaceholderView × arm64/x86_64）：`token: session.token` 把 `String?` 传给非可选参数（M1-007 起 session.token 为 internal 的 `String?`，而 uploadImage 的 token 形参为 `String`）。**QA 的 PASS 所引"19:18 CI 绿"为更早运行的误引（该绿运行 head=0e0008f，早于 M1-008 提交）**；QA 静态结论保留有效，CI 证据段作废。→ **退回 iOS 整改**：uploadImage(token:) 改 `String?`（与 request() 一致，非空才注入 Bearer），禁止 `!` 强解包；修复后推送重跑 CI，真绿后再交 QA 复核。
 
 ### M1-009【iOS】玩物详情 + 成长时间轴
 - 【任务编号】M1-009
@@ -426,3 +428,4 @@ M0-005 ──► M0-006 ──►（放行 M1）──────────�
 | 同日 v3.20 | 总控初审 M1-005（records.service 实核：findOwned 门/事务落图/排序/未来日期 400）→ REVIEW 交 QA；总控初审 M1-007（CabinetStore/View 实核：#if DEBUG 切号、静默降级占位、刷新横幅、401）→ REVIEW 待 CI 证据 + QA B07/B18 |
 | 同日 v3.21 | iOS 提交 M1-008（docs/handoffs/M1-008.md）：CreateItemView/CreateItemStore/ItemDetailPlaceholderView 3 新文件 + 收藏柜接线（sheet→创建页、创建后 push 占位详情+回刷、CreatePlaceholderView 移除）+ Network 上传能力（multipart/MIME）+ PanJiTextField 多行扩展 + pbxproj 注册；静态自检 28/28 PASS；状态 → REVIEW，构建证据待推送后 CI |
 | 同日 v3.22 | 总控初审 M1-008 通过（两段式上传缓存、trim→null、北京时区日期、防连点、原生 PhotosPicker）→ REVIEW 待 CI + QA（B08/B09/B10/B12 + 20s 观察） |
+| 同日 v3.23 | **M1-008 退回整改（首个 CI 捕获的真实代码缺陷）**：run #32843110073 BUILD FAILED——CreateItemStore.swift:74 `session.token`（String?）传给 uploadImage(token: String)，3 文件 6 处编译失败；QA 所引"19:18 CI 绿"系更早运行误引（head=0e0008f）。→ iOS 修复 uploadImage 形参改 String? 后重推重跑 |
