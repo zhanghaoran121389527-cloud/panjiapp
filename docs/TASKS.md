@@ -154,6 +154,7 @@
 - 【交接对象】iOS（若需修代码）、QA（证据复核）
 - 【审核记录】DBI 环境核查（docs/handoffs/M0-006A.md）：执行环境 Windows，xcodebuild/xcrun/sw_vers/simctl 全 ABSENT；无可达真实 Mac（known_hosts 仅 github.com、无 ssh config）；工作区非 git 仓库、无 GitHub 远程，macOS CI 不可行且 B11-CI 过渡未获批准；DOCKER_AVAILABLE=NO。结论 REAL_MAC_UNAVAILABLE → BLOCKED。待总控裁决：提供真实 Mac（首选）或批准 B11-CI + 建 GitHub 仓库（获批后 DBI 交付 ios-build.yml）
 - 【审核记录·B13】总控裁定（用户确认无任何 Mac）：默认路径改**云端 macOS CI**。解除 BLOCKED 的条件 = 用户提供 Git 托管账号/仓库（GitHub 优先：公有仓库无限免费 macOS 分钟，私有约 200 macOS 分钟/月够用；或 Codemagic 500 分钟/月）+ 代码推送成功。此后 DBI 交付 workflow、跑出构建证据。真机验收（M1-012）方案延后至 M1 后期决策。
+- 【审核记录·仓库】用户指示总控负责建 Git 托管仓库：总控已执行 `git init` + 基线提交（105 文件，root-commit）+ 交付 `.github/workflows/ios-build.yml`（B13 云 CI：xcodebuild 构建 → Info.plist 注入核对 → 模拟器启动 → 截图 → 归档工件）。**推送已完成**（用户授权后 push 成功，main@16027ad），GitHub Actions `ios-build` 运行中（2026-08-25T08:55Z）。结果处理：绿 → QA 收工件复核 → M0-006A DONE；红 → 转 M0-003 代码阻塞，派 iOS 修复。
 
 ### M0-007【BE】Backend lint 配置修复
 - 【任务编号】M0-007
@@ -394,3 +395,4 @@ M0-005 ──► M0-006 ──►（放行 M1）──────────�
 | 同日 v3.8 | BE 提交 M1-001（docs/handoffs/M1-001.md）：对齐 DATABASE_SCHEMA v2 逻辑删除，首版迁移重写（deleted_at + item_records RESTRICT），验证全绿（e2e 28/29 其中 1 个为旧硬删除断言待 M1-003 改），状态 → REVIEW；遗留 API_CONTRACT §3.9/A16 同步待总控裁决 |
 | 同日 v3.10 | 总控评审：M0-007 → DONE（lint 修复通过，M0-006 lint 阻塞解除）；M1-001 → DONE（QA 独立库全量验证 ALL PASS）；解锁 M1-002 / M1-003 → READY；DATABASE_SCHEMA §8 命令统一 npm（B10） |
 | 同日 v3.11 | 用户确认无 Mac/Docker 机器 → 总控裁定 B12（DB 标准环境=本机 PG16 路线，compose 备选，Docker 实跑豁免记已知缺口）、B13（iOS 构建默认云端 macOS CI，选型待用户确认 Git 渠道；真机验收延后决策）；M0-001 验收改 B12 口径、M0-006 验收①/拆分说明同步、M0-006A 目标/输出改云 CI；QA 清单 §0/C03 同步 |
+| 同日 v3.12 | 用户指示总控建 Git 托管仓库：总控完成 git init + 基线提交（105 文件）+ `.github/workflows/ios-build.yml`；M0-006A 解除 BLOCKED 仅剩 GitHub 建仓推送一步 |
