@@ -1,0 +1,53 @@
+# 盘迹 iOS 构建验证（B13：云端 macOS CI，M0-006A 证据产出）
+# 触发：推送到 apps/ios 或本文件变更；或手动 workflow_dispatch
+name: ios-build
+
+on:
+  push:
+    paths:
+      - 'apps/ios/**'
+      - '.github/workflows/ios-build.yml'
+  workflow_dispatch:
+
+jobs:
+  build-and-run:
+    runs-on: macos-15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build（iPhone 模拟器 Debug）
+        working-directory: apps/ios
+        run: |
+          xcodebuild -project PanJi.xcodeproj -scheme PanJi \
+            -configuration Debug \
+            -destination 'platform=iOS Simulator,name=iPhone 15' \
+            build 2>&1 | tee build-m0-003.log
+
+      - name: 核对 baseURL 注入链
+        working-directory: apps/ios
+        run: |
+          APP=$(find ~/Library/Developer/Xcode/DerivedData -path '*/Build/Products/Debug-iphonesimulator/PanJi.app' -type d | head -1)
+          plutil -p "$APP/Info.plist" | grep APIBaseURL
+
+      - name: 启动模拟器并运行 App
+        working-directory: apps/ios
+        run: |
+          xcrun simctl boot "iPhone 15" 2>/dev/null || true
+          APP=$(find ~/Library/Developer/Xcode/DerivedData -path '*/Build/Products/Debug-iphonesimulator/PanJi.app' -type d | head -1)
+          xcrun simctl install booted "$APP"
+          xcrun simctl launch booted com.panji.app
+          sleep 5
+
+      - name: 截图（占位页目视证据）
+        working-directory: apps/ios
+        run: xcrun simctl io booted screenshot m0-003-simulator.png
+
+      - name: 归档证据
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: m0-003-build-evidence
+          path: |
+            apps/ios/build-m0-003.log
+            apps/ios/m0-003-simulator.png
