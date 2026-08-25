@@ -47,3 +47,23 @@ struct ItemDTO: Decodable {
 struct ItemsResponse: Decodable {
     let items: [ItemDTO]
 }
+
+// MARK: - §3.6 / §3.10（M1-008 创建玩物）
+
+struct CreateItemRequest: Encodable {
+    let name: String
+    let categoryId: String
+    let coverImageUrl: String?
+    let subcategory: String?
+    let acquiredDate: String?
+    let sizeSpec: String?
+    let notes: String?
+}
+
+struct ItemResponse: Decodable {
+    let item: ItemDTO
+}
+
+struct UploadResponse: Decodable {
+    let url: String
+}

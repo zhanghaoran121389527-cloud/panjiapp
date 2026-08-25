@@ -6,7 +6,9 @@ struct CabinetView: View {
     let session: SessionStore
 
     @State private var store: CabinetStore
-    @State private var showCreatePlaceholder = false
+    @State private var showCreate = false
+    @State private var detailItem: ItemDTO?
+    @State private var showDetail = false
 
     init(session: SessionStore) {
         self.session = session
@@ -65,7 +67,7 @@ struct CabinetView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    showCreatePlaceholder = true
+                    showCreate = true
                 } label: {
                     Image(systemName: "plus")
                 }
@@ -78,8 +80,18 @@ struct CabinetView: View {
             }
             #endif
         }
-        .sheet(isPresented: $showCreatePlaceholder) {
-            CreatePlaceholderView()
+        .sheet(isPresented: $showCreate) {
+            CreateItemView(session: session) { item in
+                showCreate = false
+                detailItem = item
+                showDetail = true
+                Task { await store.refresh() }
+            }
+        }
+        .navigationDestination(isPresented: $showDetail) {
+            if let detailItem {
+                ItemDetailPlaceholderView(item: detailItem)
+            }
         }
         .refreshable { await store.refresh() }
         .task { await store.load() }
@@ -118,7 +130,7 @@ struct CabinetView: View {
                 .foregroundStyle(Color.PanJi.textSecondary)
                 .multilineTextAlignment(.center)
             Button("创建第一件玩物") {
-                showCreatePlaceholder = true
+                showCreate = true
             }
             .buttonStyle(PanJiPrimaryButtonStyle())
             .frame(width: 240)
@@ -172,26 +184,5 @@ private struct SkeletonCard: View {
             .opacity(pulse ? 1.0 : 0.6)
             .animation(.easeInOut(duration: 1).repeatForever(autoreverses: true), value: pulse)
             .onAppear { pulse = true }
-    }
-}
-
-/// 创建入口临时占位（M1-008 以真实创建页替换，勿外扩）
-private struct CreatePlaceholderView: View {
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        NavigationStack {
-            ZStack {
-                Color.PanJi.background.ignoresSafeArea()
-                Text("创建玩物将在 M1-008 实现")
-                    .font(Font.PanJi.secondary)
-                    .foregroundStyle(Color.PanJi.textSecondary)
-            }
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("关闭") { dismiss() }
-                }
-            }
-        }
     }
 }

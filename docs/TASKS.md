@@ -25,7 +25,7 @@
 | M1-005 | 盘玩记录接口 POST/GET（多图+补录） | BE | M1-001, M1-004 | DONE |
 | M1-006 | 网络层 + 登录/昵称流程 | iOS | M0-003, M0-004, M1-002 | DONE |
 | M1-007 | 收藏柜 | iOS | M1-003, M1-006 | DONE |
-| M1-008 | 创建玩物（创建后自动进详情） | iOS | M1-003, M1-004, M1-006, M1-007 | READY |
+| M1-008 | 创建玩物（创建后自动进详情） | iOS | M1-003, M1-004, M1-006, M1-007 | REVIEW |
 | M1-009 | 玩物详情 + 成长时间轴 | iOS | M1-003, M1-005, M1-006, M1-007 | READY |
 | M1-010 | 盘玩记录（多图 + 补录） | iOS | M1-004, M1-005, M1-006, M1-009 | BACKLOG |
 | M1-011 | 编辑/删除玩物 | iOS | M1-003, M1-004, M1-006, M1-008, M1-009 | BACKLOG |
@@ -305,7 +305,7 @@
 - 【任务编号】M1-008
 - 【任务名称】创建玩物（创建后自动进详情）
 - 【负责人】iOS
-- 【状态】READY
+- 【状态】REVIEW
 - 【目标】约 20 秒、≤3 步创建玩物；创建成功自动进入详情。
 - 【前置依赖】M1-003、M1-004、M1-006、M1-007
 - 【输入】API_CONTRACT §3.6/3.10、M0-004 线框
@@ -313,8 +313,9 @@
 - 【允许修改范围】`apps/ios/PanJi/Features/Items/**`（创建相关）、`docs/handoffs/M1-008.md`
 - 【禁止修改范围】不实现编辑页（M1-011，表单可复用）；不改契约
 - 【验收条件】① 带图与跳图均可创建 ② 创建成功自动进入详情页 ③ 选填区默认折叠 ④ 名称必填校验、品类必选 ⑤ 防重复提交 ⑥ 构建成功附日志
-- 【QA要求】B05/B06/B07 冒烟；20 秒体验观察项
+- 【QA要求】B08/B09/B10/B12 冒烟（v2.1 编号：上传失败/防连点/名称校验/无封面创建）；20 秒体验观察项
 - 【交接对象】iOS（M1-009/M1-011，表单复用）、QA
+- 【审核记录·总控初审】实读核验：CreateItemStore 两段式（先 3.10 上传拿相对 URL 缓存，创建失败重试不重传）、trim→null、名称 1~50、品类必选、防连点（submitting/uploadingCover 双态）、入手日期北京时间 + 上限=北京今天 ✓；APIClient.uploadImage multipart 字段 `file` + Bearer ✓；CreateItemView 原生 PhotosPicker（零第三方库）、封面跳过/更换/移除、更多信息折叠、错误态齐备 ✓。Network/DesignSystem 触点=最小必要已申报，接受。**剩余 = 云端 CI 构建证据（推送后）+ QA（B08/B09/B10/B12 + 20 秒观察）**。
 
 ### M1-009【iOS】玩物详情 + 成长时间轴
 - 【任务编号】M1-009
@@ -423,3 +424,5 @@ M0-005 ──► M0-006 ──►（放行 M1）──────────�
 | 同日 v3.17 | 总控初审 M1-006（实读 8 文件：/v1、Bearer、错误映射、阶段机、18 色 token 全一致）→ REVIEW 待 CI 证据+QA 冒烟；裁决：线框微不一致以 08-states 为准不回改、RootView/pbxproj 越界=机械必需接受、B8 切号入口归 M1-007；M1-004 总控初审通过（uploads 实核）→ REVIEW 交 QA；M1-007 验收增 B8 项 |
 | 同日 v3.18 | iOS 提交 M1-007（docs/handoffs/M1-007.md）：Features/Items 3 文件（CabinetView/ItemCardView/CabinetStore）+ CabinetPlaceholderView 移除 + Auth/Network 4 处机械触点（token 可见性、imageURL、DTO、AuthRootView 接线）+ pbxproj 增删注册；静态自检 20/20 PASS（含 #if DEBUG 切号编译级排除）；状态 → REVIEW，构建证据待推送后 CI |
 | 同日 v3.20 | 总控初审 M1-005（records.service 实核：findOwned 门/事务落图/排序/未来日期 400）→ REVIEW 交 QA；总控初审 M1-007（CabinetStore/View 实核：#if DEBUG 切号、静默降级占位、刷新横幅、401）→ REVIEW 待 CI 证据 + QA B07/B18 |
+| 同日 v3.21 | iOS 提交 M1-008（docs/handoffs/M1-008.md）：CreateItemView/CreateItemStore/ItemDetailPlaceholderView 3 新文件 + 收藏柜接线（sheet→创建页、创建后 push 占位详情+回刷、CreatePlaceholderView 移除）+ Network 上传能力（multipart/MIME）+ PanJiTextField 多行扩展 + pbxproj 注册；静态自检 28/28 PASS；状态 → REVIEW，构建证据待推送后 CI |
+| 同日 v3.22 | 总控初审 M1-008 通过（两段式上传缓存、trim→null、北京时区日期、防连点、原生 PhotosPicker）→ REVIEW 待 CI + QA（B08/B09/B10/B12 + 20s 观察） |

@@ -107,6 +107,8 @@ struct PanJiTextField: View {
     @Binding var text: String
     var keyboardType: UIKeyboardType = .default
     var isFocused: FocusState<Bool>.Binding
+    var axis: Axis = .horizontal          // .vertical = 多行输入（备注等）
+    var minHeight: CGFloat = 48           // 多行输入最小高 88（DS §6.4）
 
     var body: some View {
         HStack(spacing: 0) {
@@ -116,15 +118,16 @@ struct PanJiTextField: View {
                         .font(.body)
                         .foregroundStyle(Color.PanJi.textTertiary)
                 }
-                TextField("", text: $text)
+                TextField("", text: $text, axis: axis)
                     .font(.body)
                     .foregroundStyle(Color.PanJi.textPrimary)
                     .keyboardType(keyboardType)
                     .focused(isFocused)
             }
             .padding(.horizontal, CGFloat.PanJi.spaceM)
+            .padding(.vertical, axis == .horizontal ? 0 : CGFloat.PanJi.spaceM)
         }
-        .frame(height: 48)
+        .frame(minHeight: minHeight)
         .background {
             RoundedRectangle(cornerRadius: CGFloat.PanJi.radiusM)
                 .fill(Color.PanJi.surface)

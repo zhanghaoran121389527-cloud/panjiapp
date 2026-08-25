@@ -22,6 +22,9 @@
 		C1000000000000000000000E /* CabinetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000011 /* CabinetView.swift */; };
 		C1000000000000000000000F /* ItemCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000012 /* ItemCardView.swift */; };
 		C10000000000000000000010 /* CabinetStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000013 /* CabinetStore.swift */; };
+		C10000000000000000000011 /* CreateItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000014 /* CreateItemView.swift */; };
+		C10000000000000000000012 /* CreateItemStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000015 /* CreateItemStore.swift */; };
+		C10000000000000000000013 /* ItemDetailPlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000016 /* ItemDetailPlaceholderView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +46,9 @@
 		A10000000000000000000011 /* CabinetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CabinetView.swift; sourceTree = "<group>"; };
 		A10000000000000000000012 /* ItemCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemCardView.swift; sourceTree = "<group>"; };
 		A10000000000000000000013 /* CabinetStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CabinetStore.swift; sourceTree = "<group>"; };
+		A10000000000000000000014 /* CreateItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateItemView.swift; sourceTree = "<group>"; };
+		A10000000000000000000015 /* CreateItemStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateItemStore.swift; sourceTree = "<group>"; };
+		A10000000000000000000016 /* ItemDetailPlaceholderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDetailPlaceholderView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,6 +145,9 @@
 				A10000000000000000000011 /* CabinetView.swift */,
 				A10000000000000000000012 /* ItemCardView.swift */,
 				A10000000000000000000013 /* CabinetStore.swift */,
+				A10000000000000000000014 /* CreateItemView.swift */,
+				A10000000000000000000015 /* CreateItemStore.swift */,
+				A10000000000000000000016 /* ItemDetailPlaceholderView.swift */,
 			);
 			path = Items;
 			sourceTree = "<group>";
@@ -251,6 +260,9 @@
 				C1000000000000000000000E /* CabinetView.swift in Sources */,
 				C1000000000000000000000F /* ItemCardView.swift in Sources */,
 				C10000000000000000000010 /* CabinetStore.swift in Sources */,
+				C10000000000000000000011 /* CreateItemView.swift in Sources */,
+				C10000000000000000000012 /* CreateItemStore.swift in Sources */,
+				C10000000000000000000013 /* ItemDetailPlaceholderView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

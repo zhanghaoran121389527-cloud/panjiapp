@@ -44,6 +44,51 @@ struct APIClient {
         URL(string: relativePath, relativeTo: baseURL)
     }
 
+    // MARK: - 图片上传（契约 3.10：multipart 字段名 `file`，需登录）
+
+    func uploadImage(data: Data, mimeType: String, filename: String, token: String) async throws -> UploadResponse {
+        let boundary = "PanJi-\(UUID().uuidString)"
+        var url = baseURL.appendingPathComponent("v1")
+        url.appendPathComponent("uploads")
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        var body = Data()
+        body.append(Data("--\(boundary)\r\n".utf8))
+        body.append(Data("Content-Disposition: form-data; name=\"file\"; filename=\"\(filename)\"\r\n".utf8))
+        body.append(Data("Content-Type: \(mimeType)\r\n\r\n".utf8))
+        body.append(data)
+        body.append(Data("\r\n--\(boundary)--\r\n".utf8))
+        request.httpBody = body
+        return try await perform(request)
+    }
+
+    /// 常见图片类型 MIME 推断（契约 3.10 白名单：jpeg/png/heic/heif/webp）
+    static func mimeType(for data: Data) -> String {
+        if data.starts(with: [0xFF, 0xD8, 0xFF]) { return "image/jpeg" }
+        if data.starts(with: [0x89, 0x50, 0x4E, 0x47]) { return "image/png" }
+        if data.starts(with: [0x52, 0x49, 0x46, 0x46]), data.count > 12,
+           let tag = String(data: data.subdata(in: 8..<12), encoding: .ascii), tag == "WEBP" {
+            return "image/webp"
+        }
+        if data.count > 12,
+           let brand = String(data: data.subdata(in: 8..<12), encoding: .ascii),
+           ["heic", "heix", "hevc", "hevx", "mif1", "msf1", "heif"].contains(brand) {
+            return "image/heic"
+        }
+        return "image/jpeg"
+    }
+
+    static func fileExtension(for mimeType: String) -> String {
+        switch mimeType {
+        case "image/png": return "png"
+        case "image/heic", "image/heif": return "heic"
+        case "image/webp": return "webp"
+        default: return "jpg"
+        }
+    }
+
     private func perform<T: Decodable>(_ request: URLRequest) async throws -> T {
         let data: Data
         let response: URLResponse
