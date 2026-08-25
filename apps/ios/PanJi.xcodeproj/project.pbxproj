@@ -12,6 +12,14 @@
 		C10000000000000000000003 /* PanJiTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000004 /* PanJiTheme.swift */; };
 		C10000000000000000000004 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000005 /* AppConfig.swift */; };
 		C10000000000000000000005 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000006 /* Assets.xcassets */; };
+		C10000000000000000000006 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000009 /* APIClient.swift */; };
+		C10000000000000000000007 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000000A /* APIError.swift */; };
+		C10000000000000000000008 /* APIDTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000000B /* APIDTOs.swift */; };
+		C10000000000000000000009 /* AuthRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000000C /* AuthRootView.swift */; };
+		C1000000000000000000000A /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000000D /* LoginView.swift */; };
+		C1000000000000000000000B /* NicknameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000000E /* NicknameView.swift */; };
+		C1000000000000000000000C /* SessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000000F /* SessionStore.swift */; };
+		C1000000000000000000000D /* CabinetPlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000010 /* CabinetPlaceholderView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +31,14 @@
 		A10000000000000000000006 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A10000000000000000000007 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A10000000000000000000008 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
+		A10000000000000000000009 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		A1000000000000000000000A /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
+		A1000000000000000000000B /* APIDTOs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIDTOs.swift; sourceTree = "<group>"; };
+		A1000000000000000000000C /* AuthRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRootView.swift; sourceTree = "<group>"; };
+		A1000000000000000000000D /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		A1000000000000000000000E /* NicknameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameView.swift; sourceTree = "<group>"; };
+		A1000000000000000000000F /* SessionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStore.swift; sourceTree = "<group>"; };
+		A10000000000000000000010 /* CabinetPlaceholderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CabinetPlaceholderView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -50,6 +66,7 @@
 			children = (
 				B10000000000000000000003 /* App */,
 				B10000000000000000000004 /* Core */,
+				B1000000000000000000000A /* Features */,
 				B10000000000000000000007 /* Resources */,
 			);
 			path = PanJi;
@@ -85,8 +102,31 @@
 			isa = PBXGroup;
 			children = (
 				A10000000000000000000005 /* AppConfig.swift */,
+				A10000000000000000000009 /* APIClient.swift */,
+				A1000000000000000000000A /* APIError.swift */,
+				A1000000000000000000000B /* APIDTOs.swift */,
 			);
 			path = Network;
+			sourceTree = "<group>";
+		};
+		B1000000000000000000000A /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				B1000000000000000000000B /* Auth */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		B1000000000000000000000B /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				A1000000000000000000000C /* AuthRootView.swift */,
+				A1000000000000000000000D /* LoginView.swift */,
+				A1000000000000000000000E /* NicknameView.swift */,
+				A1000000000000000000000F /* SessionStore.swift */,
+				A10000000000000000000010 /* CabinetPlaceholderView.swift */,
+			);
+			path = Auth;
 			sourceTree = "<group>";
 		};
 		B10000000000000000000007 /* Resources */ = {
@@ -187,6 +227,14 @@
 				C10000000000000000000002 /* RootView.swift in Sources */,
 				C10000000000000000000003 /* PanJiTheme.swift in Sources */,
 				C10000000000000000000004 /* AppConfig.swift in Sources */,
+				C10000000000000000000006 /* APIClient.swift in Sources */,
+				C10000000000000000000007 /* APIError.swift in Sources */,
+				C10000000000000000000008 /* APIDTOs.swift in Sources */,
+				C10000000000000000000009 /* AuthRootView.swift in Sources */,
+				C1000000000000000000000A /* LoginView.swift in Sources */,
+				C1000000000000000000000B /* NicknameView.swift in Sources */,
+				C1000000000000000000000C /* SessionStore.swift in Sources */,
+				C1000000000000000000000D /* CabinetPlaceholderView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

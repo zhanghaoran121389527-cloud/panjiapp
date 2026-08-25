@@ -34,7 +34,8 @@ function run(exe, args, env = process.env) {
 if (!existsSync(join(BIN, 'bin', 'pg_ctl.exe'))) {
   console.error(
     `PG_BIN_DIR 无 PostgreSQL 二进制：${BIN}\n` +
-      '标准方式请用 infra 的 docker compose（cd infra && docker compose up -d）。',
+      '请安装本机 PostgreSQL 16 二进制后通过 PG_BIN_DIR 指向其 bin 目录，' +
+      '或使用本机已安装的 PostgreSQL（设置 PG_BIN_DIR 为对应 bin 目录）。',
   );
   process.exit(1);
 }

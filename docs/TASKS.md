@@ -10,20 +10,20 @@
 
 | 编号 | 任务 | 负责人 | 前置依赖 | 状态 |
 |---|---|---|---|---|
-| M0-001 | 本地 PostgreSQL 环境 | DBI | — | REVIEW |
+| M0-001 | 本地 PostgreSQL 环境 | DBI | — | DONE |
 | M0-002 | NestJS 工程底座 | BE | M0-001 | DONE |
-| M0-003 | SwiftUI 工程底座 | iOS | — | BLOCKED |
+| M0-003 | SwiftUI 工程底座 | iOS | — | DONE |
 | M0-004 | M1 UI 开发规格（设计系统+线框） | UI | — | DONE |
 | M0-005 | M1 验收清单与测试计划 | QA | — | DONE |
-| M0-006 | M0 集成验收 | QA | M0-001~M0-005, M0-006A | READY |
-| M0-006A | macOS/Xcode 构建环境准备 | DBI | — | BLOCKED |
+| M0-006 | M0 集成验收 | QA | M0-001~M0-005, M0-006A | DONE |
+| M0-006A | macOS/Xcode 构建环境准备 | DBI | — | DONE |
 | M0-007 | Backend lint 配置修复 | BE | — | DONE |
 | M1-001 | 数据模型实体+迁移+种子（6 表） | BE | M0-002 | DONE |
-| M1-002 | Dev Login + 昵称 API | BE | M1-001 | READY |
-| M1-003 | 分类 + 玩物 CRUD（含逻辑删除） | BE | M1-001 | READY |
-| M1-004 | 图片上传 + 静态托管 | BE | M0-002 | READY |
+| M1-002 | Dev Login + 昵称 API | BE | M1-001 | DONE |
+| M1-003 | 分类 + 玩物 CRUD（含逻辑删除） | BE | M1-001 | DONE |
+| M1-004 | 图片上传 + 静态托管 | BE | M0-002 | REVIEW |
 | M1-005 | 盘玩记录接口 POST/GET（多图+补录） | BE | M1-001, M1-004 | BACKLOG |
-| M1-006 | 网络层 + 登录/昵称流程 | iOS | M0-003, M0-004, M1-002 | BACKLOG |
+| M1-006 | 网络层 + 登录/昵称流程 | iOS | M0-003, M0-004, M1-002 | REVIEW |
 | M1-007 | 收藏柜 | iOS | M1-003, M1-006 | BACKLOG |
 | M1-008 | 创建玩物（创建后自动进详情） | iOS | M1-003, M1-004, M1-006, M1-007 | BACKLOG |
 | M1-009 | 玩物详情 + 成长时间轴 | iOS | M1-003, M1-005, M1-006, M1-007 | BACKLOG |
@@ -37,7 +37,7 @@
 - 【任务编号】M0-001
 - 【任务名称】本地 PostgreSQL 环境
 - 【负责人】DBI
-- 【状态】REVIEW
+- 【状态】DONE
 - 【目标】一条命令启动本地 PostgreSQL 16 开发环境（named volume，重启不丢数据），提供连接串。
 - 【前置依赖】无
 - 【输入】API_CONTRACT（库名 panji）、DATABASE_SCHEMA §0（环境只建空库，不建表）
@@ -49,6 +49,7 @@
 - 【交接对象】BE（连接串）、QA
 - 【审核记录】产出已提交（infra/ + handoff T-001；附带 DB-001 数据模型规格已被总控采纳提升为 docs/DATABASE_SCHEMA.md）。QA 复审（M0-001-QA.md）：FAIL-hold——静态核对 8 项全 PASS；实跑 ①②③ 因本机无 Docker 未执行，并入 M0-006；另须在 M0-006 前整改 infra/README 中过期的 CONTRACT-001/T-001 引用。通过后置 DONE。
 - 【审核记录·B12】总控裁定（用户确认无任何 Docker 机器）：验收口径改按**本机 PG16 路线**复核（BE/QA 已在真实 PG16 上完成结构/幂等/RESTRICT 实测，证据链真实）；compose 文件静态合规即交付达标，Docker 实跑豁免并记入已知缺口。DBI 需把 infra/README 同步为 B12 口径（标准=本地 PG 路线，compose 备选）。
+- 【审核记录·收尾】DBI 整改验收通过（总控实读 infra/README.md：首屏 B12 口径、本机路线 start/stop/验证三步、ASCII 路径注意、compose 降为备选并标注豁免；grep 旧引用 0 命中）。QA 本机真实 PG16 复核 ①②③ 全 PASS（启动 ready / 实连 PG16.14 / 停启后探测数据仍在）。→ **DONE**。遗留 BE 小项：dev-db.mjs 报错文案仍指向 docker compose（已并入 M1-002 附带修正项）。
 
 ### M0-002【BE】NestJS 工程底座
 - 【任务编号】M0-002
@@ -73,8 +74,8 @@
 - 【任务编号】M0-003
 - 【任务名称】SwiftUI 工程底座
 - 【负责人】iOS
-- 【状态】BLOCKED
-- 【阻塞类型】环境能力阻塞（缺 macOS/Xcode 执行环境；非代码缺陷，静态 20/20 PASS）
+- 【状态】DONE
+- 【阻塞类型】环境能力阻塞（已解除；历史记录）
 - 【目标】可编译的 SwiftUI 工程（apps/ios）：baseURL 可配置、ATS 局域网例外、主题占位。
 - 【前置依赖】无
 - 【输入】API_CONTRACT §1（前缀 `/v1/`）、PRODUCT_SPEC §8、DESIGN_SYSTEM v0（暂定色值）
@@ -86,6 +87,7 @@
 - 【交接对象】iOS（M1-006）、QA
 - 【审核记录】目录已迁回 `apps/ios/`（B1 落实，根级 `ios/` 已删除，交接单更名 M0-003.md）。QA 复审（M0-003-QA.md）：FAIL-hold——静态核对 12 项 + pbxproj/scheme 独立结构校验全 PASS；唯一阻断 = 无 Xcode 构建/运行证据（NOT VERIFIED）→ 并入 M0-006（macOS 执行 xcodebuild 并留存日志）。证据补齐后置 DONE。
 - 【审核记录·总控】BLOCKED 正式确认（变更记录 v3.5）：不把构建任务再派给 Windows iOS Agent；macOS 能力 = 独立环境任务 M0-006A；静态通过 ≠ DONE，验收标准不降。M0-006A DONE 后由 QA 回填 M0-003 验收①② → DONE。
+- 【审核记录·解除】M0-006A 云端 CI 真绿（run #32833177820，pipefail 生效）：** BUILD SUCCEEDED **；产物 Info.plist 实测 `APIBaseURL => http://localhost:3000`（注入链真实生效，且 CFBundleDisplayName=盘迹、iOS 17.0、竖屏、ATS 局域网例外全部正确）；模拟器安装并 launch 成功（pid 7543，无启动崩溃）；截图已生成并回传 `ci-logs/m0-003-simulator.png`。验收①②③ 证据齐备 → **M0-003 DONE**（截图像素级目视由 QA 在 M0-006 收尾确认，非阻断）。iOS 线解冻。
 
 ### M0-004【UI】M1 UI 开发规格（设计系统 + 线框）
 - 【任务编号】M0-004
@@ -124,7 +126,7 @@
 - 【任务编号】M0-006
 - 【任务名称】M0 集成验收
 - 【负责人】QA
-- 【状态】READY
+- 【状态】DONE
 - 【目标】确认工程底座完整，总控放行进入 M1。
 - 【前置依赖】M0-001 ~ M0-005、M0-006A（macOS 证据段）
 - 【拆分说明】非 macOS 部分（DB 实跑、后端 health/错误格式复核、BE 预置 M1 代码预核）可先行；整体 PASS 须待 M0-006A DONE。DB 实跑按 B12 本地 PG16 路线复核；compose 的 Docker 实跑环境豁免（团队无任何 Docker 机器）。
@@ -136,13 +138,16 @@
 - 【QA要求】报告含每项命令与输出
 - 【交接对象】总控（放行 M1）
 - 【审核记录】QA 已交 `docs/handoffs/M0-006.md`（PARTIAL PASS）：底座运行/HTTP 契约 PASS；lint FAIL、e2e DELETE 红、Docker NOT VERIFIED、macOS 待 M0-006A（其本身 BLOCKED：无 Mac、无 git 远程）。剩余阻塞见变更记录 v3.6。
+- 【审核记录·更新】iOS 证据段已就绪（M0-006A DONE，M0-003 DONE）；lint 已修复（M0-007 DONE）。**M0-006 剩余 = ① B12 本机 PG 路线复核（QA）② M1-003 e2e 复测（BE 提交后）③ 截图像素目视确认（QA）**。全部完成后 M0-006 可 PASS、M0 放行。
+- 【审核记录·进度】① M0-001 B12 复核 ✓（QA 实测 PASS，M0-001 DONE）② lint ✓（M0-007 DONE）③ iOS 构建证据 ✓（CI 真绿，M0-006A/M0-003 DONE；截图像素目视待 QA）④ DESIGN_SYSTEM v1 + 清单 v2 ✓ ⑤ M1-003 e2e：BE 已全绿（29/29），待 QA 独立复核时复跑。**剩余 = QA 完成 M1-003 复核 + 截图目视 + 汇总报告 → M0-006 PASS → M0 放行。**
+- 【审核记录·总控批准】QA 收尾报告（docs/qa/M0-验收报告.md）：五项验收 ①~⑤ 全部 PASS，PARTIAL 遗留全部核销（M1-003 QA 复核 PASS + e2e 复跑 29/29；截图程序化像素核验通过：1206×2622、暖米白 96.3% + 木棕圆标 + 深茶褐文字，非崩溃屏；人工目视最终确认由用户在 GitHub 侧 10 秒完成，非阻断）。总控批准 → **M0-006 DONE，M0 全部 9 任务 DONE → M0 PASS，正式放行 M1。**
 
 ### M0-006A【DBI】macOS/Xcode 构建环境准备
 - 【任务编号】M0-006A
 - 【任务名称】macOS/Xcode 构建环境准备（环境能力任务，非代码任务）
 - 【负责人】DBI（环境获取与就绪牵头）；构建执行：iOS 或 QA 在 Mac 上按 runbook 操作
-- 【状态】BLOCKED
-- 【阻塞类型】环境能力（无真实 Mac；云端 CI 路线待用户提供 Git 托管账号/仓库，见裁决 B13）
+- 【状态】DONE
+- 【阻塞类型】环境能力（已解除；历史记录）
 - 【目标】为 apps/ios 提供 macOS + Xcode 构建验证能力，产出 M0-003 验收①②的构建/运行证据。**B13：默认路径=云端 macOS CI（GitHub Actions macOS runner 或 Codemagic），无需自有 Mac。**
 - 【前置依赖】无（纯环境）
 - 【输入】docs/handoffs/M0-003.md §12 runbook、ARCHITECTURE B11
@@ -154,9 +159,11 @@
 - 【交接对象】iOS（若需修代码）、QA（证据复核）
 - 【审核记录】DBI 环境核查（docs/handoffs/M0-006A.md）：执行环境 Windows，xcodebuild/xcrun/sw_vers/simctl 全 ABSENT；无可达真实 Mac（known_hosts 仅 github.com、无 ssh config）；工作区非 git 仓库、无 GitHub 远程，macOS CI 不可行且 B11-CI 过渡未获批准；DOCKER_AVAILABLE=NO。结论 REAL_MAC_UNAVAILABLE → BLOCKED。待总控裁决：提供真实 Mac（首选）或批准 B11-CI + 建 GitHub 仓库（获批后 DBI 交付 ios-build.yml）
 - 【审核记录·B13】总控裁定（用户确认无任何 Mac）：默认路径改**云端 macOS CI**。解除 BLOCKED 的条件 = 用户提供 Git 托管账号/仓库（GitHub 优先：公有仓库无限免费 macOS 分钟，私有约 200 macOS 分钟/月够用；或 Codemagic 500 分钟/月）+ 代码推送成功。此后 DBI 交付 workflow、跑出构建证据。真机验收（M1-012）方案延后至 M1 后期决策。
+- 【审核记录·完成】run #32833177820（v5，pipefail 真绿）：构建/注入核对/模拟器启动/截图/回传全 success。总控核验回传日志：BUILD SUCCEEDED、APIBaseURL 注入正确、launch pid 7543、截图落盘。验收 ①②③④ 达成 → **DONE**。
 - 【审核记录·仓库】用户指示总控负责建 Git 托管仓库：总控已执行 `git init` + 基线提交（105 文件，root-commit）+ 交付 `.github/workflows/ios-build.yml`（B13 云 CI：xcodebuild 构建 → Info.plist 注入核对 → 模拟器启动 → 截图 → 归档工件）。**推送已完成**（用户授权后 push 成功，main@16027ad），GitHub Actions `ios-build` 运行中（2026-08-25T08:55Z）。结果处理：绿 → QA 收工件复核 → M0-006A DONE；红 → 转 M0-003 代码阻塞，派 iOS 修复。
 - 【审核记录·首跑】run #32829136499 **failure，但根因在 CI 脚本而非工程**：STEP3 `xcodebuild` 构建 **success**（真实 Mac/Xcode 编译通过，手写工程无代码缺陷）；STEP4 核对脚本失败（find 未命中 .app，脚本缺陷）。总控已交付 workflow v2（合并核对+启动+截图为一步、APP 路径自诊断、产物多归档 built-info）。待推送后自动重跑。
 - 【审核记录·次跑】run #32830202147（v2）：STEP3 Build success，STEP4 失败——用户提供日志：`APP=` 为空且 DerivedData 下 `find -name '*.app'` 零结果（构建成功但产物不在默认位置）。总控处置：v3 固定 `-derivedDataPath build/DerivedData`（确定性路径，消除 find 猜测）；v4 新增"回传日志到仓库"步骤（GITHUB_TOKEN 把 build/step4/screenshot 提交回 `ci-logs/`，总控可匿名直读日志，不再依赖用户转贴）。
+- 【审核记录·三跑（关键真相）】run #32831900251（v4）六步全 success 系**假绿**：日志回传后总控发现 build-m0-003.log 实为 `xcodebuild: error: Unable to find a device matching {name:iPhone 15}`——runner 无 iPhone 15 模拟器（仅 My Mac/占位 destination）；步骤"success"是因为 GitHub 默认 shell 无 pipefail，`xcodebuild | tee` 管道吞掉了非零退出码。**工程代码仍无缺陷**。v5 处置：① 构建改 `-destination 'generic/platform=iOS Simulator'`（不依赖具名设备）② 第 4 步按需 `simctl create` 建设备（runtimes 已随 runner 预装）③ 全部管道加 `set -o pipefail`，杜绝假绿再犯。待用户推送后重跑。
 
 ### M0-007【BE】Backend lint 配置修复
 - 【任务编号】M0-007
@@ -197,7 +204,7 @@
 - 【任务编号】M1-002
 - 【任务名称】Dev Login + 昵称 API
 - 【负责人】BE
-- 【状态】READY
+- 【状态】DONE
 - 【目标】实现契约 3.1 / 3.2 / 3.3。
 - 【前置依赖】M1-001
 - 【输入】API_CONTRACT §3.1~3.3、§4
@@ -212,7 +219,7 @@
 - 【任务编号】M1-003
 - 【任务名称】分类 + 玩物 CRUD（含逻辑删除）
 - 【负责人】BE
-- 【状态】READY
+- 【状态】REVIEW
 - 【目标】实现契约 3.4 ~ 3.9，并按 v2.3 逻辑删除口径修正预置代码：`remove()` 改 UPDATE deleted_at；全部 items 查询显式过滤 `deleted_at IS NULL`；e2e DELETE 用例改新语义。
 - 【前置依赖】M1-001（含 QA 通过）、API_CONTRACT v2.3
 - 【输入】API_CONTRACT v2.3 §3.4~3.9、§4 规则 4/10、DATABASE_SCHEMA v2
@@ -222,12 +229,15 @@
 - 【验收条件】① POST 返回完整对象，name 1~50 校验 ② GET 列表仅本人数据、含 dayCount 且**不含已删除玩物** ③ GET :id 不含 records、越权/已删除一律 404 ④ PATCH 部分更新、可传 null 清空选填、对已删除玩物 404 ⑤ DELETE 204=逻辑删除（UPDATE deleted_at）：带 records 的玩物删除成功且 records/images **物理保留**；不存在/他人/已删除 → 404 ⑥ list/getById/findOwned 等全部查询显式过滤 deleted_at IS NULL ⑦ e2e 全绿（新语义）⑧ 附 curl 自测输出
 - 【QA要求】契约核对表 3.4~3.9（v2.3）逐项勾选；B17/B18/E05~E07 冒烟
 - 【交接对象】iOS（M1-007/M1-008/M1-009/M1-011）、QA
+- 【审核记录·总控初审】实读代码核验通过：`remove()` = QueryBuilder UPDATE `deletedAt=now()` WHERE id+user_id+`deleted_at IS NULL`，`!affected → 404`（v2.3 口径，未照抄旧"重复删除 204"）；`list()` 与 `findOwned()` 均 `deletedAt: IsNull()`，getById/PATCH/records 入口经 findOwned 自动过滤；e2e 新用例含 DB 级断言（item 行在 + deleted_at 置位 + records/images 物理保留）。BE 自证 e2e 29/29、curl 五场景、lint/typecheck/build/unit 全绿。**交 QA 独立复核**（契约核对表 3.4~3.9 + B17/B18/E05~E07 + e2e 复跑）后置 DONE。
+- 【审核记录·QA+总控】QA 独立复核 **PASS**（docs/handoffs/M1-003-QA.md）：契约 3.4~3.9 逐项独立实测 + 冒烟 11/11（含 DB 级：item 行在 / deleted_at 置位 / records 物理保留 / 重复删 404 / B 越权全 404）+ 独立 e2e 复跑 29/29 全绿。总控确认 → **DONE**。已知小项（非阻断）：① 共享 panji 库并发跑 e2e 撞 pg 目录索引——后续 e2e 建议独立库（QA/BE 已共识）② e2e describe 标题"契约 v2.2"文案待顺手更新。
+- 【审核记录·QA+总控】QA 独立复核 **PASS**（docs/handoffs/M1-003-QA.md）：契约 3.4~3.9 逐项独立实测 + 冒烟 11/11（含 DB 级：item 行在/deleted_at 置位/records 物理保留/重复删 404/B 越权全 404）+ 独立 e2e 复跑 29/29 全绿。总控确认 → **DONE**。已知小项（非阻断）：① 共享 panji 库并发跑 e2e 会撞 pg 目录索引——建议 e2e 用独立库（QA/BE 已共识）② e2e describe 标题"契约 v2.2"文案待顺手更新。
 
 ### M1-004【BE】图片上传 + 静态托管
 - 【任务编号】M1-004
 - 【任务名称】图片上传 + 静态托管
 - 【负责人】BE
-- 【状态】READY
+- 【状态】REVIEW
 - 【目标】实现契约 3.10。
 - 【前置依赖】M0-002
 - 【输入】API_CONTRACT §3.10
@@ -235,8 +245,9 @@
 - 【允许修改范围】`apps/api/src/modules/uploads/**`、`docs/handoffs/M1-004.md`
 - 【禁止修改范围】不改契约；不引第三方存储 SDK
 - 【验收条件】① multipart 字段名 `file`，返回相对 URL ② jpeg/png/heic/webp 放行、其余 UNSUPPORTED_TYPE ③ >10MB 返回 UPLOAD_TOO_LARGE ④ 文件 uuid 重命名落 `uploads/`，重启服务仍可访问 ⑤ 附 curl 自测输出
-- 【QA要求】契约核对表 3.10 勾选；B16/B17 冒烟
+- 【QA要求】契约核对表 3.10 勾选；B20 上传边界冒烟
 - 【交接对象】iOS（M1-008/M1-010/M1-011）、QA
+- 【审核记录·总控初审】实读 uploads.controller 核验：全局守卫（需登录）、FileInterceptor('file')、mime+扩展名双白名单（含 heif）、10MB、uuid 重命名、相对 URL、静态公开 ✓。BE curl 七场景 + lint/typecheck/build + e2e 29/29 全绿。小注（非阻断）：mime 白名单未含 image/heif（扩展名校验兜底，heif 实传已过）。→ **交 QA 独立复核（3.10 核对表 + B20）**。
 
 ### M1-005【BE】盘玩记录接口 POST/GET（多图 + 补录）
 - 【任务编号】M1-005
@@ -257,7 +268,7 @@
 - 【任务编号】M1-006
 - 【任务名称】网络层 + 登录/昵称流程
 - 【负责人】iOS
-- 【状态】BACKLOG
+- 【状态】REVIEW
 - 【目标】API client + Dev Login 页 + 昵称页 + token 持久化 + 启动恢复 + 基础异常处理。
 - 【前置依赖】M0-003、M0-004、M1-002
 - 【输入】API_CONTRACT §3.1~3.3、DESIGN_SYSTEM v1、M0-004 线框
@@ -267,19 +278,20 @@
 - 【验收条件】① 首次登录→设昵称→进入收藏柜占位 ② 杀进程重开直接恢复登录态 ③ 401 回登录页 ④ 断网/超时显示可读提示不崩溃 ⑤ Xcode 构建成功附日志 ⑥ 换 DESIGN_SYSTEM v1 token
 - 【QA要求】B01~B05/B12 冒烟；构建证据核对
 - 【交接对象】iOS（M1-007）、QA
+- 【审核记录·总控初审】实读 8 新文件核验：APIClient（/v1 拼接、Bearer、10s 超时、六错误码映射+网络异常）✓；SessionStore 阶段机 + UserDefaults（A7）+ /v1/me 恢复 + 401 清 token + 断网重试态 ✓；LoginView/NicknameView 校验、防连点、B5 不可跳过 ✓；PanJiTheme 18 色 token 与 DESIGN_SYSTEM v1 逐值一致（实查 18/18）✓。裁决：① 线框两处微不一致以 08-states 全局规范为准，实现正确，线框不回改（UI 待命）② RootView/pbxproj 越界修改=机械必需且已申报，接受 ③ B8 DEBUG-only 切号入口归 M1-007。**剩余 = 云端 CI 构建证据（推送后）+ QA 冒烟（B01~B05/B12）**。
 
 ### M1-007【iOS】收藏柜
 - 【任务编号】M1-007
 - 【任务名称】收藏柜
 - 【负责人】iOS
 - 【状态】BACKLOG
-- 【目标】品类分组陈列（封面/名称/盘玩天数）+ 空态引导 + 下拉刷新。
+- 【目标】品类分组陈列（封面/名称/盘玩天数）+ 空态引导 + 下拉刷新 + DEBUG-only「开发：切换账号」入口（裁决 B8，QA B18 冒烟用）。
 - 【前置依赖】M1-003、M1-006
 - 【输入】API_CONTRACT §3.4/3.5、M0-004 线框、DESIGN_SYSTEM v1
 - 【输出】`apps/ios/PanJi/Features/Items/`（CabinetView、ItemCardView、空态）
 - 【允许修改范围】`apps/ios/PanJi/Features/Items/**`、`docs/handoffs/M1-007.md`
 - 【禁止修改范围】不实现创建/详情页（M1-008/M1-009）；不改契约
-- 【验收条件】① 按品类分组正确 ② 卡片三要素齐全 ③ 空态显示"创建第一件玩物"引导 ④ 下拉刷新可用 ⑤ 构建成功附日志
+- 【验收条件】① 按品类分组正确 ② 卡片三要素齐全 ③ 空态显示"创建第一件玩物"引导 ④ 下拉刷新可用 ⑤ 构建成功附日志 ⑥ DEBUG-only 切号入口仅 DEBUG 构建可见（#if DEBUG）
 - 【QA要求】B07 无封面占位、B18 隔离冒烟
 - 【交接对象】iOS（M1-008/M1-009）、QA
 
@@ -398,3 +410,8 @@ M0-005 ──► M0-006 ──►（放行 M1）──────────�
 | 同日 v3.10 | 总控评审：M0-007 → DONE（lint 修复通过，M0-006 lint 阻塞解除）；M1-001 → DONE（QA 独立库全量验证 ALL PASS）；解锁 M1-002 / M1-003 → READY；DATABASE_SCHEMA §8 命令统一 npm（B10） |
 | 同日 v3.11 | 用户确认无 Mac/Docker 机器 → 总控裁定 B12（DB 标准环境=本机 PG16 路线，compose 备选，Docker 实跑豁免记已知缺口）、B13（iOS 构建默认云端 macOS CI，选型待用户确认 Git 渠道；真机验收延后决策）；M0-001 验收改 B12 口径、M0-006 验收①/拆分说明同步、M0-006A 目标/输出改云 CI；QA 清单 §0/C03 同步 |
 | 同日 v3.12 | 用户指示总控建 Git 托管仓库：总控完成 git init + 基线提交（105 文件）+ `.github/workflows/ios-build.yml`；M0-006A 解除 BLOCKED 仅剩 GitHub 建仓推送一步 |
+| 同日 v3.13 | CI 五轮迭代定位（v1 脚本缺陷 → v2 日志暴露 DerivedData 无产物 → v4 假绿=无 pipefail 掩盖 xcodebuild 失败 → v5 generic 目标+按需建模拟器+pipefail）。**run #32833177820 真绿**：BUILD SUCCEEDED、APIBaseURL 注入实测正确、模拟器 launch 成功、截图回传。M0-006A DONE、M0-003 解除 BLOCKED → DONE，iOS 线解冻（M1-006 待 M1-002） |
+| 同日 v3.14 | M0-001 收尾整改验收通过 + QA 本机 PG 复核全 PASS → DONE；M1-003 总控初审通过（实读代码：逻辑删除/查询过滤/e2e DB 级断言符合 v2.3）→ REVIEW 交 QA 独立复核；M0-006 五项中四项已就绪，仅剩 QA 复核收尾 |
+| 同日 v3.15 | **M0 PASS，正式放行 M1**：M0-006 五项验收全 PASS（QA 报告 + 总控批准），M0 全部 9 任务 DONE；M1-002 总控实核 → DONE（生产门禁/事务建号/文案修正）；M1-003 经 QA 独立复核 PASS → DONE（e2e 29/29）；**M1-006 → READY（iOS 网络层+登录可派发）** |
+| 同日 v3.16 | iOS 提交 M1-006（docs/handoffs/M1-006.md）：网络层 3 文件（APIClient/APIError/APIDTOs）+ Auth 5 文件（AuthRootView/LoginView/NicknameView/SessionStore/CabinetPlaceholderView）+ PanJiTheme v1 全量替换 + RootView 接管 + pbxproj 注册 8 文件；静态校验全 PASS；状态 → REVIEW，构建证据待推送后云端 CI（ios-build workflow） |
+| 同日 v3.17 | 总控初审 M1-006（实读 8 文件：/v1、Bearer、错误映射、阶段机、18 色 token 全一致）→ REVIEW 待 CI 证据+QA 冒烟；裁决：线框微不一致以 08-states 为准不回改、RootView/pbxproj 越界=机械必需接受、B8 切号入口归 M1-007；M1-004 总控初审通过（uploads 实核）→ REVIEW 交 QA；M1-007 验收增 B8 项 |

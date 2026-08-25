@@ -1,4 +1,4 @@
-# 盘迹 M1 本地开发 PostgreSQL（M0-001）
+# 盘迹 M1 本地开发 PostgreSQL（M0-001）—— 备选路线（需 Docker；裁决 B12：标准为本机 PG16，见 infra/README 与 apps/api/scripts/dev-db.mjs）
 # 用法：cd infra && docker compose up -d
 services:
   postgres:

@@ -428,27 +428,61 @@ describe('盘迹 M1 主链 e2e（契约 v2.2）', () => {
     expect(tooBig.body.code).toBe('UPLOAD_TOO_LARGE');
   });
 
-  it('DELETE /items/:id：204 硬删除，records/images 级联清除', async () => {
+  it('DELETE /items/:id：204 逻辑删除，records/images 物理保留，已删除对外 404', async () => {
+    // ① 删除带记录玩物 → 204（v2.3 逻辑删除）
     const res = await request(app.getHttpServer())
       .delete(`/v1/items/${itemId}`)
       .set(auth(tokenA));
     expect(res.status).toBe(204);
 
-    const gone = await request(app.getHttpServer())
-      .get(`/v1/items/${itemId}`)
-      .set(auth(tokenA));
-    expect(gone.status).toBe(404);
-
+    // ② 数据层：item 行仍在、deleted_at 已置位；records/images 物理保留
+    const [{ count: itemCount, deleted: deletedAt }] = await ds.query(
+      `SELECT count(*)::int AS count, bool_and(deleted_at IS NOT NULL) AS deleted
+       FROM items WHERE id = $1`,
+      [itemId],
+    );
+    expect(itemCount).toBe(1);
+    expect(deletedAt).toBe(true);
     const [{ count: recCount }] = await ds.query(
       `SELECT count(*)::int AS count FROM item_records WHERE item_id = $1`,
       [itemId],
     );
-    expect(recCount).toBe(0);
+    expect(recCount).toBe(3);
     const [{ count: imgCount }] = await ds.query(
       `SELECT count(*)::int AS count FROM record_images ri
        WHERE ri.record_id IN (SELECT id FROM item_records WHERE item_id = $1)`,
       [itemId],
     );
-    expect(imgCount).toBe(0);
+    expect(imgCount).toBe(2);
+
+    // ③ 重复删除 → 404（v2.3：未命中=已删除）
+    const again = await request(app.getHttpServer())
+      .delete(`/v1/items/${itemId}`)
+      .set(auth(tokenA));
+    expect(again.status).toBe(404);
+    expect(again.body.code).toBe('NOT_FOUND');
+
+    // ④ 已删除玩物对所有正常接口视为不存在
+    const detail = await request(app.getHttpServer())
+      .get(`/v1/items/${itemId}`)
+      .set(auth(tokenA));
+    expect(detail.status).toBe(404);
+
+    const records = await request(app.getHttpServer())
+      .get(`/v1/items/${itemId}/records`)
+      .set(auth(tokenA));
+    expect(records.status).toBe(404);
+
+    const patch = await request(app.getHttpServer())
+      .patch(`/v1/items/${itemId}`)
+      .set(auth(tokenA))
+      .send({ name: '删除后改名' });
+    expect(patch.status).toBe(404);
+
+    const list = await request(app.getHttpServer())
+      .get('/v1/items')
+      .set(auth(tokenA));
+    expect(list.status).toBe(200);
+    expect(list.body.items).toEqual([]);
   });
 });

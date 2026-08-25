@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { ApiError } from '../../common/api-error';
 import { dayCount, isValidDateString, todayBeijing } from '../../common/dates';
 import { Category } from '../../entities/category.entity';
@@ -64,10 +64,10 @@ export class ItemsService {
     return this.toFullDto(item, 0);
   }
 
-  /** 契约 3.5：仅当前用户；createdAt 倒序；dayCount 服务端批量计算。 */
+  /** 契约 3.5：仅当前用户；createdAt 倒序；已删除玩物不出现（v2.3）。 */
   async list(userId: string): Promise<{ items: ItemListItemDto[] }> {
     const rows = await this.items.find({
-      where: { userId },
+      where: { userId, deletedAt: IsNull() },
       order: { createdAt: 'DESC' },
     });
     const firstDates = await this.minRecordedDates(rows.map((r) => r.id));
@@ -130,15 +130,34 @@ export class ItemsService {
     );
   }
 
-  /** 契约 3.9：硬删除；DB 层 FK CASCADE 连带删 records/images。 */
+  /**
+   * 契约 3.9（v2.3）：逻辑删除。
+   * 命中 → 204（controller 层）；未命中（不存在/他人/已删除）→ 404。
+   * item_records / record_images 物理保留；M1 无恢复接口。
+   */
   async remove(userId: string, id: string): Promise<void> {
-    const item = await this.findOwned(userId, id);
-    await this.items.remove(item);
+    const result = await this.items
+      .createQueryBuilder()
+      .update()
+      .set({ deletedAt: () => 'now()' })
+      .where('id = :id AND user_id = :userId AND deleted_at IS NULL', {
+        id,
+        userId,
+      })
+      .execute();
+    if (!result.affected) {
+      throw new ApiError(404, 'NOT_FOUND', '玩物不存在');
+    }
   }
 
-  /** 归属校验：不存在或不属于当前用户一律 404，不泄露存在性。 */
+  /**
+   * 归属校验：不存在、不属于当前用户、或已逻辑删除一律 404，不泄露存在性。
+   * getById / update / records 入口（RecordsService.findOwned 调用）均经此过滤。
+   */
   async findOwned(userId: string, id: string): Promise<Item> {
-    const item = await this.items.findOne({ where: { id, userId } });
+    const item = await this.items.findOne({
+      where: { id, userId, deletedAt: IsNull() },
+    });
     if (!item) throw new ApiError(404, 'NOT_FOUND', '玩物不存在');
     return item;
   }
