@@ -156,6 +156,7 @@
 - 【审核记录·B13】总控裁定（用户确认无任何 Mac）：默认路径改**云端 macOS CI**。解除 BLOCKED 的条件 = 用户提供 Git 托管账号/仓库（GitHub 优先：公有仓库无限免费 macOS 分钟，私有约 200 macOS 分钟/月够用；或 Codemagic 500 分钟/月）+ 代码推送成功。此后 DBI 交付 workflow、跑出构建证据。真机验收（M1-012）方案延后至 M1 后期决策。
 - 【审核记录·仓库】用户指示总控负责建 Git 托管仓库：总控已执行 `git init` + 基线提交（105 文件，root-commit）+ 交付 `.github/workflows/ios-build.yml`（B13 云 CI：xcodebuild 构建 → Info.plist 注入核对 → 模拟器启动 → 截图 → 归档工件）。**推送已完成**（用户授权后 push 成功，main@16027ad），GitHub Actions `ios-build` 运行中（2026-08-25T08:55Z）。结果处理：绿 → QA 收工件复核 → M0-006A DONE；红 → 转 M0-003 代码阻塞，派 iOS 修复。
 - 【审核记录·首跑】run #32829136499 **failure，但根因在 CI 脚本而非工程**：STEP3 `xcodebuild` 构建 **success**（真实 Mac/Xcode 编译通过，手写工程无代码缺陷）；STEP4 核对脚本失败（find 未命中 .app，脚本缺陷）。总控已交付 workflow v2（合并核对+启动+截图为一步、APP 路径自诊断、产物多归档 built-info）。待推送后自动重跑。
+- 【审核记录·次跑】run #32830202147（v2）：STEP3 Build success，STEP4 失败——用户提供日志：`APP=` 为空且 DerivedData 下 `find -name '*.app'` 零结果（构建成功但产物不在默认位置）。总控处置：v3 固定 `-derivedDataPath build/DerivedData`（确定性路径，消除 find 猜测）；v4 新增"回传日志到仓库"步骤（GITHUB_TOKEN 把 build/step4/screenshot 提交回 `ci-logs/`，总控可匿名直读日志，不再依赖用户转贴）。
 
 ### M0-007【BE】Backend lint 配置修复
 - 【任务编号】M0-007

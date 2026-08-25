@@ -9,6 +9,9 @@ on:
       - '.github/workflows/ios-build.yml'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build-and-run:
     runs-on: macos-15
@@ -55,3 +58,19 @@ jobs:
             apps/ios/m0-003-step4.log
             apps/ios/built-info.plist.out
             apps/ios/m0-003-simulator.png
+
+      - name: 回传日志到仓库（总控自诊断闭环）
+        if: always()
+        run: |
+          mkdir -p ci-logs
+          cp apps/ios/build-m0-003.log ci-logs/ 2>/dev/null || true
+          cp apps/ios/m0-003-step4.log ci-logs/ 2>/dev/null || true
+          cp apps/ios/built-info.plist.out ci-logs/ 2>/dev/null || true
+          cp apps/ios/m0-003-simulator.png ci-logs/ 2>/dev/null || true
+          git config user.name "panji-ci"
+          git config user.email "ci@panji.local"
+          git add ci-logs/ || true
+          if ! git diff --cached --quiet; then
+            git commit -m "ci: 回传构建证据 run=$GITHUB_RUN_ID" || true
+            git push origin HEAD:main || true
+          fi
