@@ -16,31 +16,34 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build（iPhone 模拟器 Debug）
+      - name: Build（iPhone 模拟器 Debug，固定 DerivedData 路径）
         working-directory: apps/ios
         run: |
           xcodebuild -project PanJi.xcodeproj -scheme PanJi \
             -configuration Debug \
             -destination 'platform=iOS Simulator,name=iPhone 15' \
+            -derivedDataPath build/DerivedData \
             build 2>&1 | tee build-m0-003.log
 
-      - name: 注入核对 + 模拟器启动 + 截图
+      - name: 注入核对 + 模拟器启动 + 截图（全程日志落盘）
         working-directory: apps/ios
         run: |
-          APP=$(find "$HOME/Library/Developer/Xcode/DerivedData" -type d -path '*/Debug-iphonesimulator/PanJi.app' 2>/dev/null | head -1)
-          echo "APP=$APP"
-          if [ -z "$APP" ]; then
-            echo "::error::未找到构建产物 PanJi.app，DerivedData 目录内容如下："
-            find "$HOME/Library/Developer/Xcode/DerivedData" -maxdepth 5 -type d -name '*.app' 2>/dev/null | head -10
-            exit 1
-          fi
-          plutil -p "$APP/Info.plist" | tee built-info.plist.out
-          grep APIBaseURL built-info.plist.out
-          xcrun simctl boot "iPhone 15" 2>/dev/null || true
-          xcrun simctl install booted "$APP"
-          xcrun simctl launch booted com.panji.app
-          sleep 5
-          xcrun simctl io booted screenshot m0-003-simulator.png
+          {
+            set -x
+            APP="build/DerivedData/Build/Products/Debug-iphonesimulator/PanJi.app"
+            ls -d "$APP"
+            plutil -p "$APP/Info.plist" | tee built-info.plist.out
+            grep APIBaseURL built-info.plist.out
+            DEVICE=$(xcrun simctl list devices available | grep -m1 "iPhone 15" | grep -oE '\([0-9A-F-]{36}\)' | head -1 | tr -d '()')
+            echo "DEVICE=$DEVICE"
+            [ -n "$DEVICE" ] || DEVICE="iPhone 15"
+            xcrun simctl boot "$DEVICE" 2>/dev/null || true
+            xcrun simctl install "$DEVICE" "$APP"
+            xcrun simctl launch "$DEVICE" com.panji.app
+            sleep 5
+            xcrun simctl io "$DEVICE" screenshot m0-003-simulator.png
+            echo "STEP4_ALL_OK"
+          } 2>&1 | tee m0-003-step4.log
 
       - name: 归档证据
         if: always()
@@ -49,5 +52,6 @@ jobs:
           name: m0-003-build-evidence
           path: |
             apps/ios/build-m0-003.log
+            apps/ios/m0-003-step4.log
             apps/ios/built-info.plist.out
             apps/ios/m0-003-simulator.png
