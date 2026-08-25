@@ -22,9 +22,9 @@
 | M1-002 | Dev Login + 昵称 API | BE | M1-001 | DONE |
 | M1-003 | 分类 + 玩物 CRUD（含逻辑删除） | BE | M1-001 | DONE |
 | M1-004 | 图片上传 + 静态托管 | BE | M0-002 | DONE |
-| M1-005 | 盘玩记录接口 POST/GET（多图+补录） | BE | M1-001, M1-004 | READY |
+| M1-005 | 盘玩记录接口 POST/GET（多图+补录） | BE | M1-001, M1-004 | REVIEW |
 | M1-006 | 网络层 + 登录/昵称流程 | iOS | M0-003, M0-004, M1-002 | DONE |
-| M1-007 | 收藏柜 | iOS | M1-003, M1-006 | READY |
+| M1-007 | 收藏柜 | iOS | M1-003, M1-006 | REVIEW |
 | M1-008 | 创建玩物（创建后自动进详情） | iOS | M1-003, M1-004, M1-006, M1-007 | BACKLOG |
 | M1-009 | 玩物详情 + 成长时间轴 | iOS | M1-003, M1-005, M1-006, M1-007 | BACKLOG |
 | M1-010 | 盘玩记录（多图 + 补录） | iOS | M1-004, M1-005, M1-006, M1-009 | BACKLOG |
@@ -254,7 +254,7 @@
 - 【任务编号】M1-005
 - 【任务名称】盘玩记录接口 POST/GET（多图 + 补录）
 - 【负责人】BE
-- 【状态】READY
+- 【状态】REVIEW
 - 【目标】实现契约 3.11 / 3.12。
 - 【前置依赖】M1-001、M1-004
 - 【输入】API_CONTRACT §3.11~3.12、§4、DATABASE_SCHEMA §5/§6
@@ -264,6 +264,7 @@
 - 【验收条件】① 默认日期=今天（北京时间）② 过去日期可补录 ③ photoUrls 落 record_images 且顺序保持 ④ GET records 按 recordedDate 倒序、同日期 createdAt 倒序 ⑤ 归属校验（他人 item 404）⑥ recordedDate 晚于今天返回 VALIDATION_ERROR ⑦ 长度校验按裁决 A12 ⑧ 附 curl 自测输出
 - 【QA要求】契约核对表 3.11/3.12 勾选；补录与排序冒烟
 - 【交接对象】iOS（M1-009/M1-010）、QA
+- 【审核记录·总控初审】实读 records.service 核验：findOwned 门（他人/已删 404）、recordedDate 默认北京今天 + 未来日期 400（A10）、事务落 record_images（sortOrder=数组下标）、GET 排序 recordedDate DESC + createdAt DESC、图片按 sortOrder ASC 组装 ✓。BE curl 十场景 + e2e 29/29 全绿。→ **交 QA 独立复核（3.11/3.12 核对表 + 补录/排序冒烟）**。
 
 ### M1-006【iOS】网络层 + 登录/昵称流程
 - 【任务编号】M1-006
@@ -286,7 +287,7 @@
 - 【任务编号】M1-007
 - 【任务名称】收藏柜
 - 【负责人】iOS
-- 【状态】READY
+- 【状态】REVIEW
 - 【目标】品类分组陈列（封面/名称/盘玩天数）+ 空态引导 + 下拉刷新 + DEBUG-only「开发：切换账号」入口（裁决 B8，QA B18 冒烟用）。
 - 【前置依赖】M1-003、M1-006
 - 【输入】API_CONTRACT §3.4/3.5、M0-004 线框、DESIGN_SYSTEM v1
@@ -296,6 +297,7 @@
 - 【验收条件】① 按品类分组正确 ② 卡片三要素齐全 ③ 空态显示"创建第一件玩物"引导 ④ 下拉刷新可用 ⑤ 构建成功附日志 ⑥ DEBUG-only 切号入口仅 DEBUG 构建可见（#if DEBUG）
 - 【QA要求】B07 无封面占位、B18 隔离冒烟
 - 【交接对象】iOS（M1-008/M1-009）、QA
+- 【审核记录·总控初审】实读核验：CabinetStore async let 并发拉取、客户端分组（仅含有玩物品类、sort_order 序）、刷新失败保留内容+横幅、401 signOut ✓；CabinetView 三要素卡片 + AsyncImage 静默降级首字占位 + 空态 CTA + 骨架/错误重试 + #if DEBUG 切号（B8 编译级排除，Release 无）✓；APIClient.imageURL 归网络层 ✓；Auth/Network 4 处触点=移除占位视图的机械连带，接受。**剩余 = 云端 CI 构建证据（推送后）+ QA（B07/B18）**。
 
 ### M1-008【iOS】创建玩物（创建后自动进详情）
 - 【任务编号】M1-008
@@ -417,3 +419,5 @@ M0-005 ──► M0-006 ──►（放行 M1）──────────�
 | 同日 v3.15 | **M0 PASS，正式放行 M1**：M0-006 五项验收全 PASS（QA 报告 + 总控批准），M0 全部 9 任务 DONE；M1-002 总控实核 → DONE（生产门禁/事务建号/文案修正）；M1-003 经 QA 独立复核 PASS → DONE（e2e 29/29）；**M1-006 → READY（iOS 网络层+登录可派发）** |
 | 同日 v3.16 | iOS 提交 M1-006（docs/handoffs/M1-006.md）：网络层 3 文件（APIClient/APIError/APIDTOs）+ Auth 5 文件（AuthRootView/LoginView/NicknameView/SessionStore/CabinetPlaceholderView）+ PanJiTheme v1 全量替换 + RootView 接管 + pbxproj 注册 8 文件；静态校验全 PASS；状态 → REVIEW，构建证据待推送后云端 CI（ios-build workflow） |
 | 同日 v3.17 | 总控初审 M1-006（实读 8 文件：/v1、Bearer、错误映射、阶段机、18 色 token 全一致）→ REVIEW 待 CI 证据+QA 冒烟；裁决：线框微不一致以 08-states 为准不回改、RootView/pbxproj 越界=机械必需接受、B8 切号入口归 M1-007；M1-004 总控初审通过（uploads 实核）→ REVIEW 交 QA；M1-007 验收增 B8 项 |
+| 同日 v3.18 | iOS 提交 M1-007（docs/handoffs/M1-007.md）：Features/Items 3 文件（CabinetView/ItemCardView/CabinetStore）+ CabinetPlaceholderView 移除 + Auth/Network 4 处机械触点（token 可见性、imageURL、DTO、AuthRootView 接线）+ pbxproj 增删注册；静态自检 20/20 PASS（含 #if DEBUG 切号编译级排除）；状态 → REVIEW，构建证据待推送后 CI |
+| 同日 v3.20 | 总控初审 M1-005（records.service 实核：findOwned 门/事务落图/排序/未来日期 400）→ REVIEW 交 QA；总控初审 M1-007（CabinetStore/View 实核：#if DEBUG 切号、静默降级占位、刷新横幅、401）→ REVIEW 待 CI 证据 + QA B07/B18 |

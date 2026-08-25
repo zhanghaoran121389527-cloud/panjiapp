@@ -23,3 +23,27 @@ struct UserResponse: Decodable {
 struct NicknameRequest: Encodable {
     let nickname: String
 }
+
+// MARK: - §3.4 / §3.5（M1-007 收藏柜）
+
+struct CategoryDTO: Decodable {
+    let id: String
+    let name: String
+}
+
+struct CategoriesResponse: Decodable {
+    let categories: [CategoryDTO]
+}
+
+struct ItemDTO: Decodable {
+    let id: String
+    let name: String
+    let coverImageUrl: String?
+    let categoryId: String
+    let dayCount: Int
+    let createdAt: String
+}
+
+struct ItemsResponse: Decodable {
+    let items: [ItemDTO]
+}

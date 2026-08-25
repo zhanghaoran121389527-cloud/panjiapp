@@ -39,6 +39,11 @@ struct APIClient {
         return try await perform(request)
     }
 
+    /// 静态图片相对路径（裁决 A3）解析为完整 URL；各页面用它加载 `/uploads/...` 图片，禁止自行拼 URL。
+    func imageURL(for relativePath: String) -> URL? {
+        URL(string: relativePath, relativeTo: baseURL)
+    }
+
     private func perform<T: Decodable>(_ request: URLRequest) async throws -> T {
         let data: Data
         let response: URLResponse

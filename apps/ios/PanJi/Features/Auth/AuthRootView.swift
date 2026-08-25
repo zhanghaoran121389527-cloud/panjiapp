@@ -21,7 +21,7 @@ struct AuthRootView: View {
                 case .needNickname:
                     NicknameView(session: session)
                 case .signedIn:
-                    CabinetPlaceholderView(nickname: session.nickname ?? "")
+                    CabinetView(session: session)
                 }
             }
         }

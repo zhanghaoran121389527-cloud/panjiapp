@@ -19,7 +19,9 @@
 		C1000000000000000000000A /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000000D /* LoginView.swift */; };
 		C1000000000000000000000B /* NicknameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000000E /* NicknameView.swift */; };
 		C1000000000000000000000C /* SessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000000F /* SessionStore.swift */; };
-		C1000000000000000000000D /* CabinetPlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000010 /* CabinetPlaceholderView.swift */; };
+		C1000000000000000000000E /* CabinetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000011 /* CabinetView.swift */; };
+		C1000000000000000000000F /* ItemCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000012 /* ItemCardView.swift */; };
+		C10000000000000000000010 /* CabinetStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000013 /* CabinetStore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,7 +40,9 @@
 		A1000000000000000000000D /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		A1000000000000000000000E /* NicknameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameView.swift; sourceTree = "<group>"; };
 		A1000000000000000000000F /* SessionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStore.swift; sourceTree = "<group>"; };
-		A10000000000000000000010 /* CabinetPlaceholderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CabinetPlaceholderView.swift; sourceTree = "<group>"; };
+		A10000000000000000000011 /* CabinetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CabinetView.swift; sourceTree = "<group>"; };
+		A10000000000000000000012 /* ItemCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemCardView.swift; sourceTree = "<group>"; };
+		A10000000000000000000013 /* CabinetStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CabinetStore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,6 +117,7 @@
 			isa = PBXGroup;
 			children = (
 				B1000000000000000000000B /* Auth */,
+				B1000000000000000000000C /* Items */,
 			);
 			path = Features;
 			sourceTree = "<group>";
@@ -124,9 +129,18 @@
 				A1000000000000000000000D /* LoginView.swift */,
 				A1000000000000000000000E /* NicknameView.swift */,
 				A1000000000000000000000F /* SessionStore.swift */,
-				A10000000000000000000010 /* CabinetPlaceholderView.swift */,
 			);
 			path = Auth;
+			sourceTree = "<group>";
+		};
+		B1000000000000000000000C /* Items */ = {
+			isa = PBXGroup;
+			children = (
+				A10000000000000000000011 /* CabinetView.swift */,
+				A10000000000000000000012 /* ItemCardView.swift */,
+				A10000000000000000000013 /* CabinetStore.swift */,
+			);
+			path = Items;
 			sourceTree = "<group>";
 		};
 		B10000000000000000000007 /* Resources */ = {
@@ -234,7 +248,9 @@
 				C1000000000000000000000A /* LoginView.swift in Sources */,
 				C1000000000000000000000B /* NicknameView.swift in Sources */,
 				C1000000000000000000000C /* SessionStore.swift in Sources */,
-				C1000000000000000000000D /* CabinetPlaceholderView.swift in Sources */,
+				C1000000000000000000000E /* CabinetView.swift in Sources */,
+				C1000000000000000000000F /* ItemCardView.swift in Sources */,
+				C10000000000000000000010 /* CabinetStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

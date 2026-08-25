@@ -20,7 +20,8 @@ final class SessionStore {
     private static let nicknameKey = "session.nickname"
     private static let lastPhoneKey = "session.lastPhone"
 
-    private var token: String? { UserDefaults.standard.string(forKey: Self.tokenKey) }
+    /// 当前 token（业务请求注入用；写入仅经 login/signOut）
+    var token: String? { UserDefaults.standard.string(forKey: Self.tokenKey) }
 
     /// 登录页开发便利：回填上次成功登录的手机号（线框 01 默认状态）
     var lastPhone: String { UserDefaults.standard.string(forKey: Self.lastPhoneKey) ?? "" }
