@@ -23,8 +23,8 @@
 | M1-003 | 分类 + 玩物 CRUD（含逻辑删除） | BE | M1-001 | DONE |
 | M1-004 | 图片上传 + 静态托管 | BE | M0-002 | REVIEW |
 | M1-005 | 盘玩记录接口 POST/GET（多图+补录） | BE | M1-001, M1-004 | BACKLOG |
-| M1-006 | 网络层 + 登录/昵称流程 | iOS | M0-003, M0-004, M1-002 | REVIEW |
-| M1-007 | 收藏柜 | iOS | M1-003, M1-006 | BACKLOG |
+| M1-006 | 网络层 + 登录/昵称流程 | iOS | M0-003, M0-004, M1-002 | DONE |
+| M1-007 | 收藏柜 | iOS | M1-003, M1-006 | READY |
 | M1-008 | 创建玩物（创建后自动进详情） | iOS | M1-003, M1-004, M1-006, M1-007 | BACKLOG |
 | M1-009 | 玩物详情 + 成长时间轴 | iOS | M1-003, M1-005, M1-006, M1-007 | BACKLOG |
 | M1-010 | 盘玩记录（多图 + 补录） | iOS | M1-004, M1-005, M1-006, M1-009 | BACKLOG |
@@ -268,7 +268,7 @@
 - 【任务编号】M1-006
 - 【任务名称】网络层 + 登录/昵称流程
 - 【负责人】iOS
-- 【状态】REVIEW
+- 【状态】DONE
 - 【目标】API client + Dev Login 页 + 昵称页 + token 持久化 + 启动恢复 + 基础异常处理。
 - 【前置依赖】M0-003、M0-004、M1-002
 - 【输入】API_CONTRACT §3.1~3.3、DESIGN_SYSTEM v1、M0-004 线框
@@ -279,12 +279,13 @@
 - 【QA要求】B01~B05/B12 冒烟；构建证据核对
 - 【交接对象】iOS（M1-007）、QA
 - 【审核记录·总控初审】实读 8 新文件核验：APIClient（/v1 拼接、Bearer、10s 超时、六错误码映射+网络异常）✓；SessionStore 阶段机 + UserDefaults（A7）+ /v1/me 恢复 + 401 清 token + 断网重试态 ✓；LoginView/NicknameView 校验、防连点、B5 不可跳过 ✓；PanJiTheme 18 色 token 与 DESIGN_SYSTEM v1 逐值一致（实查 18/18）✓。裁决：① 线框两处微不一致以 08-states 全局规范为准，实现正确，线框不回改（UI 待命）② RootView/pbxproj 越界修改=机械必需且已申报，接受 ③ B8 DEBUG-only 切号入口归 M1-007。**剩余 = 云端 CI 构建证据（推送后）+ QA 冒烟（B01~B05/B12）**。
+- 【审核记录·CI+总控】run #32839079301（head e4480d5，含 M1-006 全部代码）**真绿**：xcodebuild 真实编译 12 个 Swift 文件 BUILD SUCCEEDED；模拟器安装 + launch 成功（pid 8874，Dev Login 页正常渲染）；截图更新。验收⑤⑥ ✓ → **DONE**。注：运行态交互项 ①~④ 由 **M1-012 真机 20 步主链**统一验收（A02~A05/A19 + B01~B05 已入 M0-005 清单），不重复单列。
 
 ### M1-007【iOS】收藏柜
 - 【任务编号】M1-007
 - 【任务名称】收藏柜
 - 【负责人】iOS
-- 【状态】BACKLOG
+- 【状态】READY
 - 【目标】品类分组陈列（封面/名称/盘玩天数）+ 空态引导 + 下拉刷新 + DEBUG-only「开发：切换账号」入口（裁决 B8，QA B18 冒烟用）。
 - 【前置依赖】M1-003、M1-006
 - 【输入】API_CONTRACT §3.4/3.5、M0-004 线框、DESIGN_SYSTEM v1
