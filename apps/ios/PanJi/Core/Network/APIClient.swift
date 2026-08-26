@@ -46,13 +46,15 @@ struct APIClient {
 
     // MARK: - 图片上传（契约 3.10：multipart 字段名 `file`，需登录）
 
-    func uploadImage(data: Data, mimeType: String, filename: String, token: String) async throws -> UploadResponse {
+    func uploadImage(data: Data, mimeType: String, filename: String, token: String?) async throws -> UploadResponse {
         let boundary = "PanJi-\(UUID().uuidString)"
         var url = baseURL.appendingPathComponent("v1")
         url.appendPathComponent("uploads")
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        if let token {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         var body = Data()
         body.append(Data("--\(boundary)\r\n".utf8))

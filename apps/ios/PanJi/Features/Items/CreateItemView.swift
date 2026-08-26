@@ -14,6 +14,9 @@ struct CreateItemView: View {
     @State private var showMore = false
     @State private var coverPickerItem: PhotosPickerItem?
     @FocusState private var nameFocused: Bool
+    @FocusState private var subcategoryFocused: Bool
+    @FocusState private var sizeFocused: Bool
+    @FocusState private var notesFocused: Bool
 
     init(session: SessionStore, onCreated: @escaping (ItemDTO) -> Void) {
         self.session = session
@@ -203,9 +206,9 @@ struct CreateItemView: View {
             }
             if showMore {
                 VStack(alignment: .leading, spacing: CGFloat.PanJi.spaceL) {
-                    optionalField(label: "子类", placeholder: "如：狮子头", text: $store.subcategory, limit: 50)
+                    optionalField(label: "子类", placeholder: "如：狮子头", text: $store.subcategory, limit: 50, isFocused: $subcategoryFocused)
                     acquiredDateRow
-                    optionalField(label: "尺寸/规格", placeholder: "如：42mm", text: $store.sizeSpec, limit: 100)
+                    optionalField(label: "尺寸/规格", placeholder: "如：42mm", text: $store.sizeSpec, limit: 100, isFocused: $sizeFocused)
                     VStack(alignment: .leading, spacing: CGFloat.PanJi.spaceS) {
                         Text("备注")
                             .font(Font.PanJi.caption)
@@ -221,14 +224,12 @@ struct CreateItemView: View {
         }
     }
 
-    @FocusState private var notesFocused: Bool
-
-    private func optionalField(label: String, placeholder: String, text: Binding<String>, limit: Int) -> some View {
+    private func optionalField(label: String, placeholder: String, text: Binding<String>, limit: Int, isFocused: FocusState<Bool>.Binding) -> some View {
         VStack(alignment: .leading, spacing: CGFloat.PanJi.spaceS) {
             Text(label)
                 .font(Font.PanJi.caption)
                 .foregroundStyle(Color.PanJi.textSecondary)
-            PanJiTextField(placeholder: placeholder, text: text, isFocused: $notesFocused)
+            PanJiTextField(placeholder: placeholder, text: text, isFocused: isFocused)
                 .onChange(of: text.wrappedValue) { _, newValue in
                     if newValue.count > limit { text.wrappedValue = String(newValue.prefix(limit)) }
                 }

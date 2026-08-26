@@ -429,3 +429,4 @@ M0-005 ──► M0-006 ──►（放行 M1）──────────�
 | 同日 v3.21 | iOS 提交 M1-008（docs/handoffs/M1-008.md）：CreateItemView/CreateItemStore/ItemDetailPlaceholderView 3 新文件 + 收藏柜接线（sheet→创建页、创建后 push 占位详情+回刷、CreatePlaceholderView 移除）+ Network 上传能力（multipart/MIME）+ PanJiTextField 多行扩展 + pbxproj 注册；静态自检 28/28 PASS；状态 → REVIEW，构建证据待推送后 CI |
 | 同日 v3.22 | 总控初审 M1-008 通过（两段式上传缓存、trim→null、北京时区日期、防连点、原生 PhotosPicker）→ REVIEW 待 CI + QA（B08/B09/B10/B12 + 20s 观察） |
 | 同日 v3.23 | **M1-008 退回整改（首个 CI 捕获的真实代码缺陷）**：run #32843110073 BUILD FAILED——CreateItemStore.swift:74 `session.token`（String?）传给 uploadImage(token: String)，3 文件 6 处编译失败；QA 所引"19:18 CI 绿"系更早运行误引（head=0e0008f）。→ iOS 修复 uploadImage 形参改 String? 后重推重跑 |
+| 同日 v3.24 | iOS 完成 M1-008 修复：uploadImage token 形参改 `String?` + if-let 注入（无强解包）、清除 categoryId!（guard 兜底）、三输入框 FocusState 分离（修复多框同亮）；静态复检 F1~F9 全 PASS + pbxproj 72/72 + UTF-8；handoff 补记 §20/§21 → 复报 REVIEW，待推送后 CI 真绿 |

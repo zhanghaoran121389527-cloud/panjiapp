@@ -86,10 +86,11 @@ final class CreateItemStore {
             }
         }
 
+        guard let categoryId else { return nil }
         do {
             let request = CreateItemRequest(
                 name: trimmedName,
-                categoryId: categoryId!,
+                categoryId: categoryId,
                 coverImageUrl: url,
                 subcategory: Self.nilIfBlank(subcategory),
                 acquiredDate: acquiredDate.map(acquiredDateString),
