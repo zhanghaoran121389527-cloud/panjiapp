@@ -318,6 +318,7 @@
 - 【交接对象】iOS（M1-009/M1-011，表单复用）、QA
 - 【审核记录·总控初审】实读核验：CreateItemStore 两段式（先 3.10 上传拿相对 URL 缓存，创建失败重试不重传）、trim→null、名称 1~50、品类必选、防连点（submitting/uploadingCover 双态）、入手日期北京时间 + 上限=北京今天 ✓；APIClient.uploadImage multipart 字段 `file` + Bearer ✓；CreateItemView 原生 PhotosPicker（零第三方库）、封面跳过/更换/移除、更多信息折叠、错误态齐备 ✓。Network/DesignSystem 触点=最小必要已申报，接受。**剩余 = 云端 CI 构建证据（推送后）+ QA（B08/B09/B10/B12 + 20 秒观察）**。
 - 【审核记录·退回】总控独立复核 CI：run #32843110073（head 416164b，M1-008 代码）**BUILD FAILED**——`CreateItemStore.swift:74` 等 3 文件编译失败（6 处：CreateItemView/CreateItemStore/ItemDetailPlaceholderView × arm64/x86_64）：`token: session.token` 把 `String?` 传给非可选参数（M1-007 起 session.token 为 internal 的 `String?`，而 uploadImage 的 token 形参为 `String`）。**QA 的 PASS 所引"19:18 CI 绿"为更早运行的误引（该绿运行 head=0e0008f，早于 M1-008 提交）**；QA 静态结论保留有效，CI 证据段作废。→ **退回 iOS 整改**：uploadImage(token:) 改 `String?`（与 request() 一致，非空才注入 Bearer），禁止 `!` 强解包；修复后推送重跑 CI，真绿后再交 QA 复核。
+- 【审核记录·退回2】iOS 修复 token 形参后重跑：run #32957685059 仍 **BUILD FAILED**（5 处）——新暴露 `CreateItemView.swift:82/123`：`store.coverURL = nil` 直接赋值，而 `coverURL` 为 `private(set)`。→ 再退回：CreateItemStore 提供 `removeCover()`（清 coverData + coverURL），View 不得直接写 store 私有字段；同时自查是否还有其他对 private(set)/内部字段的直接写入。
 
 ### M1-009【iOS】玩物详情 + 成长时间轴
 - 【任务编号】M1-009
