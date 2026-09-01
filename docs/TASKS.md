@@ -431,3 +431,4 @@ M0-005 ──► M0-006 ──►（放行 M1）──────────�
 | 同日 v3.22 | 总控初审 M1-008 通过（两段式上传缓存、trim→null、北京时区日期、防连点、原生 PhotosPicker）→ REVIEW 待 CI + QA（B08/B09/B10/B12 + 20s 观察） |
 | 同日 v3.23 | **M1-008 退回整改（首个 CI 捕获的真实代码缺陷）**：run #32843110073 BUILD FAILED——CreateItemStore.swift:74 `session.token`（String?）传给 uploadImage(token: String)，3 文件 6 处编译失败；QA 所引"19:18 CI 绿"系更早运行误引（head=0e0008f）。→ iOS 修复 uploadImage 形参改 String? 后重推重跑 |
 | 同日 v3.24 | iOS 完成 M1-008 修复：uploadImage token 形参改 `String?` + if-let 注入（无强解包）、清除 categoryId!（guard 兜底）、三输入框 FocusState 分离（修复多框同亮）；静态复检 F1~F9 全 PASS + pbxproj 72/72 + UTF-8；handoff 补记 §20/§21 → 复报 REVIEW，待推送后 CI 真绿 |
+| 同日 v3.25 | **M1-008 二次退回**（CI 重跑暴露）：CreateItemView 直写 private(set) 的 store.coverURL。iOS 修复：store 新增 selectCover()/removeCover() 方法，View 两处改走方法；全文件自查 private(set) 零直写、公开字段写入合法；静态复检 A/B/C 组全 PASS → 复报 REVIEW，待 CI 复跑 |

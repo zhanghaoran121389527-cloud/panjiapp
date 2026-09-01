@@ -29,6 +29,20 @@ final class CreateItemStore {
         self.session = session
     }
 
+    /// 重选封面：更新原始数据并使已上传 URL 失效（换图后需重新上传）
+    func selectCover(_ data: Data) {
+        coverData = data
+        coverURL = nil
+        coverError = nil
+    }
+
+    /// 移除封面：清原始数据与已上传 URL（跳过封面入口）
+    func removeCover() {
+        coverData = nil
+        coverURL = nil
+        coverError = nil
+    }
+
     var trimmedName: String {
         name.trimmingCharacters(in: .whitespacesAndNewlines)
     }

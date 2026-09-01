@@ -78,9 +78,7 @@ struct CreateItemView: View {
                         .clipShape(RoundedRectangle(cornerRadius: CGFloat.PanJi.radiusL))
                         .overlay(alignment: .topTrailing) {
                             Button("移除") {
-                                store.coverData = nil
-                                store.coverURL = nil
-                                store.coverError = nil
+                                store.removeCover()
                             }
                             .font(Font.PanJi.caption)
                             .foregroundStyle(Color.PanJi.danger)
@@ -119,8 +117,7 @@ struct CreateItemView: View {
             guard let item else { return }
             Task {
                 if let data = try? await item.loadTransferable(type: Data.self) {
-                    store.coverData = data
-                    store.coverURL = nil
+                    store.selectCover(data)
                 }
                 coverPickerItem = nil
             }
