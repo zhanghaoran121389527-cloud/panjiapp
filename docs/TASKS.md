@@ -25,7 +25,7 @@
 | M1-005 | 盘玩记录接口 POST/GET（多图+补录） | BE | M1-001, M1-004 | DONE |
 | M1-006 | 网络层 + 登录/昵称流程 | iOS | M0-003, M0-004, M1-002 | DONE |
 | M1-007 | 收藏柜 | iOS | M1-003, M1-006 | DONE |
-| M1-008 | 创建玩物（创建后自动进详情） | iOS | M1-003, M1-004, M1-006, M1-007 | IN_PROGRESS |
+| M1-008 | 创建玩物（创建后自动进详情） | iOS | M1-003, M1-004, M1-006, M1-007 | DONE |
 | M1-009 | 玩物详情 + 成长时间轴 | iOS | M1-003, M1-005, M1-006, M1-007 | READY |
 | M1-010 | 盘玩记录（多图 + 补录） | iOS | M1-004, M1-005, M1-006, M1-009 | BACKLOG |
 | M1-011 | 编辑/删除玩物 | iOS | M1-003, M1-004, M1-006, M1-008, M1-009 | BACKLOG |
@@ -305,8 +305,8 @@
 - 【任务编号】M1-008
 - 【任务名称】创建玩物（创建后自动进详情）
 - 【负责人】iOS
-- 【状态】IN_PROGRESS
-- 【阻塞类型】代码缺陷（云端 CI 编译失败，退回整改）
+- 【状态】DONE
+- 【阻塞类型】代码缺陷（已解除；历史：两次编译错误经 CI 捕获并修复）
 - 【目标】约 20 秒、≤3 步创建玩物；创建成功自动进入详情。
 - 【前置依赖】M1-003、M1-004、M1-006、M1-007
 - 【输入】API_CONTRACT §3.6/3.10、M0-004 线框
@@ -319,6 +319,7 @@
 - 【审核记录·总控初审】实读核验：CreateItemStore 两段式（先 3.10 上传拿相对 URL 缓存，创建失败重试不重传）、trim→null、名称 1~50、品类必选、防连点（submitting/uploadingCover 双态）、入手日期北京时间 + 上限=北京今天 ✓；APIClient.uploadImage multipart 字段 `file` + Bearer ✓；CreateItemView 原生 PhotosPicker（零第三方库）、封面跳过/更换/移除、更多信息折叠、错误态齐备 ✓。Network/DesignSystem 触点=最小必要已申报，接受。**剩余 = 云端 CI 构建证据（推送后）+ QA（B08/B09/B10/B12 + 20 秒观察）**。
 - 【审核记录·退回】总控独立复核 CI：run #32843110073（head 416164b，M1-008 代码）**BUILD FAILED**——`CreateItemStore.swift:74` 等 3 文件编译失败（6 处：CreateItemView/CreateItemStore/ItemDetailPlaceholderView × arm64/x86_64）：`token: session.token` 把 `String?` 传给非可选参数（M1-007 起 session.token 为 internal 的 `String?`，而 uploadImage 的 token 形参为 `String`）。**QA 的 PASS 所引"19:18 CI 绿"为更早运行的误引（该绿运行 head=0e0008f，早于 M1-008 提交）**；QA 静态结论保留有效，CI 证据段作废。→ **退回 iOS 整改**：uploadImage(token:) 改 `String?`（与 request() 一致，非空才注入 Bearer），禁止 `!` 强解包；修复后推送重跑 CI，真绿后再交 QA 复核。
 - 【审核记录·退回2】iOS 修复 token 形参后重跑：run #32957685059 仍 **BUILD FAILED**（5 处）——新暴露 `CreateItemView.swift:82/123`：`store.coverURL = nil` 直接赋值，而 `coverURL` 为 `private(set)`。→ 再退回：CreateItemStore 提供 `removeCover()`（清 coverData + coverURL），View 不得直接写 store 私有字段；同时自查是否还有其他对 private(set)/内部字段的直接写入。
+- 【审核记录·CI+总控】二次修复后 run #33510273974（head 3e46f18）**真绿**：BUILD SUCCEEDED + launch + STEP4_ALL_OK（总控实读日志确认）。QA 静态冒烟结论（B08/B09/B10/B12 + 20s 支撑）保留有效，交互计时并入 M1-012。总控批准 → **DONE**。解锁 M1-009（已 READY，立即派发）。
 
 ### M1-009【iOS】玩物详情 + 成长时间轴
 - 【任务编号】M1-009
@@ -432,3 +433,4 @@ M0-005 ──► M0-006 ──►（放行 M1）──────────�
 | 同日 v3.23 | **M1-008 退回整改（首个 CI 捕获的真实代码缺陷）**：run #32843110073 BUILD FAILED——CreateItemStore.swift:74 `session.token`（String?）传给 uploadImage(token: String)，3 文件 6 处编译失败；QA 所引"19:18 CI 绿"系更早运行误引（head=0e0008f）。→ iOS 修复 uploadImage 形参改 String? 后重推重跑 |
 | 同日 v3.24 | iOS 完成 M1-008 修复：uploadImage token 形参改 `String?` + if-let 注入（无强解包）、清除 categoryId!（guard 兜底）、三输入框 FocusState 分离（修复多框同亮）；静态复检 F1~F9 全 PASS + pbxproj 72/72 + UTF-8；handoff 补记 §20/§21 → 复报 REVIEW，待推送后 CI 真绿 |
 | 同日 v3.25 | **M1-008 二次退回**（CI 重跑暴露）：CreateItemView 直写 private(set) 的 store.coverURL。iOS 修复：store 新增 selectCover()/removeCover() 方法，View 两处改走方法；全文件自查 private(set) 零直写、公开字段写入合法；静态复检 A/B/C 组全 PASS → 复报 REVIEW，待 CI 复跑 |
+| 同日 v3.26 | M1-008 二次修复后 CI **真绿**（run #33510273974：BUILD SUCCEEDED + STEP4_ALL_OK，总控实读确认）→ **DONE**（QA 静态冒烟保留，交互计时并入 M1-012）。解锁 M1-009 派发 |
