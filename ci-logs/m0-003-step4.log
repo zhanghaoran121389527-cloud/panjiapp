@@ -71,7 +71,7 @@ DEVICE=9E2C2CF0-7DD4-4B9D-B6CE-63C9E42B95A7
 + xcrun simctl boot 9E2C2CF0-7DD4-4B9D-B6CE-63C9E42B95A7
 + xcrun simctl install 9E2C2CF0-7DD4-4B9D-B6CE-63C9E42B95A7 build/DerivedData/Build/Products/Debug-iphonesimulator/PanJi.app
 + xcrun simctl launch 9E2C2CF0-7DD4-4B9D-B6CE-63C9E42B95A7 com.panji.app
-com.panji.app: 3225
+com.panji.app: 4290
 + sleep 5
 + xcrun simctl io 9E2C2CF0-7DD4-4B9D-B6CE-63C9E42B95A7 screenshot m0-003-simulator.png
 Detected file type 'PNG' from extension
