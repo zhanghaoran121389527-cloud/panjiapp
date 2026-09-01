@@ -51,7 +51,13 @@ struct CabinetView: View {
                                         .foregroundStyle(Color.PanJi.textPrimary)
                                     LazyVGrid(columns: columns, spacing: CGFloat.PanJi.spaceM) {
                                         ForEach(section.items, id: \.id) { item in
-                                            ItemCardView(item: item)
+                                            Button {
+                                                detailItem = item
+                                                showDetail = true
+                                            } label: {
+                                                ItemCardView(item: item)
+                                            }
+                                            .buttonStyle(.plain)
                                         }
                                     }
                                 }
@@ -90,7 +96,12 @@ struct CabinetView: View {
         }
         .navigationDestination(isPresented: $showDetail) {
             if let detailItem {
-                ItemDetailPlaceholderView(item: detailItem)
+                ItemDetailView(session: session, itemId: detailItem.id)
+            }
+        }
+        .onChange(of: showDetail) { _, newValue in
+            if !newValue {
+                Task { await store.refresh() }   // 详情返回回刷（线框 03 注意事项）
             }
         }
         .refreshable { await store.refresh() }

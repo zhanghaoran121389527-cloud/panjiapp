@@ -26,7 +26,7 @@
 | M1-006 | 网络层 + 登录/昵称流程 | iOS | M0-003, M0-004, M1-002 | DONE |
 | M1-007 | 收藏柜 | iOS | M1-003, M1-006 | DONE |
 | M1-008 | 创建玩物（创建后自动进详情） | iOS | M1-003, M1-004, M1-006, M1-007 | DONE |
-| M1-009 | 玩物详情 + 成长时间轴 | iOS | M1-003, M1-005, M1-006, M1-007 | READY |
+| M1-009 | 玩物详情 + 成长时间轴 | iOS | M1-003, M1-005, M1-006, M1-007 | REVIEW |
 | M1-010 | 盘玩记录（多图 + 补录） | iOS | M1-004, M1-005, M1-006, M1-009 | BACKLOG |
 | M1-011 | 编辑/删除玩物 | iOS | M1-003, M1-004, M1-006, M1-008, M1-009 | BACKLOG |
 | M1-012 | M1 主链真机验收（20 步） | QA | M1-001~M1-011, M0-006 | BACKLOG |
@@ -325,7 +325,7 @@
 - 【任务编号】M1-009
 - 【任务名称】玩物详情 + 成长时间轴
 - 【负责人】iOS
-- 【状态】READY
+- 【状态】REVIEW
 - 【目标】大图 + 记录时间轴（多图、一句话、日期、时长/方式）+ 空态 CTA"记录第一天" + 编辑入口。
 - 【前置依赖】M1-003、M1-005、M1-006、M1-007
 - 【输入】API_CONTRACT §3.7/3.12、M0-004 线框
@@ -335,6 +335,7 @@
 - 【验收条件】① 时间轴按 recordedDate 倒序 ② 多图记录完整展示且顺序保持 ③ 空态显示"记录第一天"入口 ④ 记录保存后回详情即时刷新 ⑤ 编辑入口可达 ⑥ 构建成功附日志
 - 【QA要求】A14~A16 主链步核对；B09/B10 冒烟
 - 【交接对象】iOS（M1-010/M1-011）、QA
+- 【审核记录·总控初审】实读核验：ItemDetailStore 三接口并行 + notFound 态 + 401 + refresh()（供 M1-010 保存后回刷）✓；TimelineView 空态 CTA + 日期三态（今天/M月d日/yyyy年M月d日，北京时间）✓；TimelineCellView 多图 96×96 顺序保持 + fullScreenCover 预览 + 缩略图失败重试 ✓；PhotoPreviewView TabView 翻页（B7）✓；ItemDetailView dayCount 用服务端值、底部「记录今天/记录第一天」双态 + sheet onDismiss 回刷 ✓。裁决：① 入手信息不单独成行=同意（原则 9：相册日记非仪表盘）② 全屏预览关闭用按钮=接受（线框二选一已满足）。**剩余 = 云端 CI 构建证据（推送后）+ QA（A14~A16/B09/B10）**。
 
 ### M1-010【iOS】盘玩记录（多图 + 补录）
 - 【任务编号】M1-010
@@ -434,3 +435,5 @@ M0-005 ──► M0-006 ──►（放行 M1）──────────�
 | 同日 v3.24 | iOS 完成 M1-008 修复：uploadImage token 形参改 `String?` + if-let 注入（无强解包）、清除 categoryId!（guard 兜底）、三输入框 FocusState 分离（修复多框同亮）；静态复检 F1~F9 全 PASS + pbxproj 72/72 + UTF-8；handoff 补记 §20/§21 → 复报 REVIEW，待推送后 CI 真绿 |
 | 同日 v3.25 | **M1-008 二次退回**（CI 重跑暴露）：CreateItemView 直写 private(set) 的 store.coverURL。iOS 修复：store 新增 selectCover()/removeCover() 方法，View 两处改走方法；全文件自查 private(set) 零直写、公开字段写入合法；静态复检 A/B/C 组全 PASS → 复报 REVIEW，待 CI 复跑 |
 | 同日 v3.26 | M1-008 二次修复后 CI **真绿**（run #33510273974：BUILD SUCCEEDED + STEP4_ALL_OK，总控实读确认）→ **DONE**（QA 静态冒烟保留，交互计时并入 M1-012）。解锁 M1-009 派发 |
+| 同日 v3.27 | iOS 提交 M1-009（docs/handoffs/M1-009.md）：ItemDetailStore/ItemDetailView/TimelineView/TimelineCellView/PhotoPreviewView 5 新文件 + 收藏柜接线（卡片点击进详情、返回回刷、onChange(showDetail)）+ ItemDetailPlaceholderView 移除 + APIDTOs 追加 §3.7/3.12 + pbxproj 增删注册；静态自检 30/30 PASS；状态 → REVIEW，构建证据待推送后 CI |
+| 同日 v3.28 | 总控初审 M1-009 通过（三接口并行、notFound、日期三态、多图顺序、B7 预览、服务端 dayCount）；裁决：入手信息不单独成行=同意（原则 9）、预览关闭按钮=接受 → REVIEW 待 CI + QA |

@@ -24,7 +24,11 @@
 		C10000000000000000000010 /* CabinetStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000013 /* CabinetStore.swift */; };
 		C10000000000000000000011 /* CreateItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000014 /* CreateItemView.swift */; };
 		C10000000000000000000012 /* CreateItemStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000015 /* CreateItemStore.swift */; };
-		C10000000000000000000013 /* ItemDetailPlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000016 /* ItemDetailPlaceholderView.swift */; };
+		C10000000000000000000014 /* ItemDetailStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000017 /* ItemDetailStore.swift */; };
+		C10000000000000000000015 /* ItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000018 /* ItemDetailView.swift */; };
+		C10000000000000000000016 /* TimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000019 /* TimelineView.swift */; };
+		C10000000000000000000017 /* TimelineCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000001A /* TimelineCellView.swift */; };
+		C10000000000000000000018 /* PhotoPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000001B /* PhotoPreviewView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,7 +52,11 @@
 		A10000000000000000000013 /* CabinetStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CabinetStore.swift; sourceTree = "<group>"; };
 		A10000000000000000000014 /* CreateItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateItemView.swift; sourceTree = "<group>"; };
 		A10000000000000000000015 /* CreateItemStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateItemStore.swift; sourceTree = "<group>"; };
-		A10000000000000000000016 /* ItemDetailPlaceholderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDetailPlaceholderView.swift; sourceTree = "<group>"; };
+		A10000000000000000000017 /* ItemDetailStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDetailStore.swift; sourceTree = "<group>"; };
+		A10000000000000000000018 /* ItemDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDetailView.swift; sourceTree = "<group>"; };
+		A10000000000000000000019 /* TimelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineView.swift; sourceTree = "<group>"; };
+		A1000000000000000000001A /* TimelineCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineCellView.swift; sourceTree = "<group>"; };
+		A1000000000000000000001B /* PhotoPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPreviewView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -147,7 +155,11 @@
 				A10000000000000000000013 /* CabinetStore.swift */,
 				A10000000000000000000014 /* CreateItemView.swift */,
 				A10000000000000000000015 /* CreateItemStore.swift */,
-				A10000000000000000000016 /* ItemDetailPlaceholderView.swift */,
+				A10000000000000000000017 /* ItemDetailStore.swift */,
+				A10000000000000000000018 /* ItemDetailView.swift */,
+				A10000000000000000000019 /* TimelineView.swift */,
+				A1000000000000000000001A /* TimelineCellView.swift */,
+				A1000000000000000000001B /* PhotoPreviewView.swift */,
 			);
 			path = Items;
 			sourceTree = "<group>";
@@ -262,7 +274,11 @@
 				C10000000000000000000010 /* CabinetStore.swift in Sources */,
 				C10000000000000000000011 /* CreateItemView.swift in Sources */,
 				C10000000000000000000012 /* CreateItemStore.swift in Sources */,
-				C10000000000000000000013 /* ItemDetailPlaceholderView.swift in Sources */,
+				C10000000000000000000014 /* ItemDetailStore.swift in Sources */,
+				C10000000000000000000015 /* ItemDetailView.swift in Sources */,
+				C10000000000000000000016 /* TimelineView.swift in Sources */,
+				C10000000000000000000017 /* TimelineCellView.swift in Sources */,
+				C10000000000000000000018 /* PhotoPreviewView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

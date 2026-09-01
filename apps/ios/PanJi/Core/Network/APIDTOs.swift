@@ -67,3 +67,37 @@ struct ItemResponse: Decodable {
 struct UploadResponse: Decodable {
     let url: String
 }
+
+// MARK: - §3.7 / §3.12（M1-009 详情与时间轴）
+
+struct ItemDetailDTO: Decodable {
+    let id: String
+    let name: String
+    let coverImageUrl: String?
+    let categoryId: String
+    let subcategory: String?
+    let sizeSpec: String?
+    let acquiredDate: String?
+    let notes: String?
+    let dayCount: Int
+    let createdAt: String
+    let updatedAt: String
+}
+
+struct ItemDetailResponse: Decodable {
+    let item: ItemDetailDTO
+}
+
+struct RecordDTO: Decodable {
+    let id: String
+    let photoUrls: [String]
+    let content: String
+    let durationMinutes: Int?
+    let method: String?
+    let recordedDate: String
+    let createdAt: String
+}
+
+struct RecordsResponse: Decodable {
+    let records: [RecordDTO]
+}
