@@ -1,15 +1,16 @@
 import SwiftUI
 
 /// 玩物详情（线框 05 · 契约 3.7/3.12）：封面大图 + 名称/品类/盘玩天数 + 成长时间轴 + 底部常驻「记录今天」。
-/// 「记录」入口 = M1-010 接线点；「编辑」入口 = M1-011 接线点（当前均为占位 sheet）。
+/// 「记录」入口 = M1-010 已接线；「编辑」入口 = M1-011 接线点（占位 sheet）。
 @MainActor
 struct ItemDetailView: View {
     let session: SessionStore
     let itemId: String
 
     @State private var store: ItemDetailStore
-    @State private var showRecordPlaceholder = false
+    @State private var showRecord = false
     @State private var showEditPlaceholder = false
+    @State private var showSavedToast = false
 
     init(session: SessionStore, itemId: String) {
         self.session = session
@@ -40,15 +41,43 @@ struct ItemDetailView: View {
                 Button("编辑") { showEditPlaceholder = true }   // 验收⑤ 编辑入口可达
             }
         }
-        .sheet(isPresented: $showRecordPlaceholder, onDismiss: {
-            Task { await store.refresh() }   // 记录保存后回详情即时刷新（验收④；M1-010 替换本 sheet）
+        .sheet(isPresented: $showRecord, onDismiss: {
+            Task { await store.refresh() }   // 记录保存后回详情即时刷新（验收④）
         }) {
-            RecordPlaceholderView()
+            RecordView(session: session, itemId: itemId) {
+                showSavedToast = true
+            }
         }
         .sheet(isPresented: $showEditPlaceholder) {
             EditPlaceholderView()
         }
+        .overlay(alignment: .bottom) {
+            if showSavedToast {
+                savedToast
+                    .transition(.opacity)
+            }
+        }
+        .sensoryFeedback(.success, trigger: showSavedToast)   // 保存成功轻触感反馈（线框 06）
+        .task(id: showSavedToast) {
+            guard showSavedToast else { return }
+            try? await Task.sleep(for: .seconds(1.5))   // DS §6.8：1.5s 自动消失
+            showSavedToast = false
+        }
         .task { await store.load() }
+    }
+
+    /// 保存成功 toast（DS §6.8：textPrimary 底 + background 字 + checkmark.circle.fill）
+    private var savedToast: some View {
+        HStack(spacing: CGFloat.PanJi.spaceS) {
+            Image(systemName: "checkmark.circle.fill")
+            Text("已保存")
+        }
+        .font(.body.weight(.semibold))
+        .foregroundStyle(Color.PanJi.background)
+        .padding(.horizontal, CGFloat.PanJi.spaceL)
+        .padding(.vertical, CGFloat.PanJi.spaceM)
+        .background(Capsule().fill(Color.PanJi.textPrimary))
+        .padding(.bottom, CGFloat.PanJi.spaceXXL)
     }
 
     // MARK: 已加载内容
@@ -84,7 +113,7 @@ struct ItemDetailView: View {
                     }
                 }
                 TimelineView(records: store.records) {
-                    showRecordPlaceholder = true
+                    showRecord = true
                 }
             }
             .padding(CGFloat.PanJi.spaceL)
@@ -92,7 +121,7 @@ struct ItemDetailView: View {
         .refreshable { await store.refresh() }
         .safeAreaInset(edge: .bottom) {
             Button {
-                showRecordPlaceholder = true
+                showRecord = true
             } label: {
                 Text(store.records.isEmpty ? "记录第一天" : "记录今天")
             }
@@ -217,29 +246,6 @@ private struct SkeletonBlock: View {
             .opacity(pulse ? 1.0 : 0.6)
             .animation(.easeInOut(duration: 1).repeatForever(autoreverses: true), value: pulse)
             .onAppear { pulse = true }
-    }
-}
-
-/// 记录入口临时占位（M1-010 以真实记录页替换）
-private struct RecordPlaceholderView: View {
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        NavigationStack {
-            ZStack {
-                Color.PanJi.background.ignoresSafeArea()
-                Text("记录盘玩将在 M1-010 实现")
-                    .font(Font.PanJi.secondary)
-                    .foregroundStyle(Color.PanJi.textSecondary)
-            }
-            .navigationTitle("记录")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("关闭") { dismiss() }
-                }
-            }
-        }
     }
 }
 

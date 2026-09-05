@@ -101,3 +101,17 @@ struct RecordDTO: Decodable {
 struct RecordsResponse: Decodable {
     let records: [RecordDTO]
 }
+
+// MARK: - §3.11（M1-010 盘玩记录）
+
+struct CreateRecordRequest: Encodable {
+    let photoUrls: [String]
+    let content: String
+    let durationMinutes: Int?
+    let method: String?
+    let recordedDate: String?
+}
+
+struct RecordResponse: Decodable {
+    let record: RecordDTO
+}

@@ -27,7 +27,7 @@
 | M1-007 | 收藏柜 | iOS | M1-003, M1-006 | DONE |
 | M1-008 | 创建玩物（创建后自动进详情） | iOS | M1-003, M1-004, M1-006, M1-007 | DONE |
 | M1-009 | 玩物详情 + 成长时间轴 | iOS | M1-003, M1-005, M1-006, M1-007 | DONE |
-| M1-010 | 盘玩记录（多图 + 补录） | iOS | M1-004, M1-005, M1-006, M1-009 | READY |
+| M1-010 | 盘玩记录（多图 + 补录） | iOS | M1-004, M1-005, M1-006, M1-009 | REVIEW |
 | M1-011 | 编辑/删除玩物 | iOS | M1-003, M1-004, M1-006, M1-008, M1-009 | BACKLOG |
 | M1-012 | M1 主链真机验收（20 步） | QA | M1-001~M1-011, M0-006 | BACKLOG |
 
@@ -341,7 +341,7 @@
 - 【任务编号】M1-010
 - 【任务名称】盘玩记录（多图 + 补录）
 - 【负责人】iOS
-- 【状态】BACKLOG
+- 【状态】REVIEW
 - 【目标】约 10 秒完成：默认只有"照片 + 一句话 + 保存"；"更多记录项"折叠出时长/方式/日期（过去日期=补录）。
 - 【前置依赖】M1-004、M1-005、M1-006、M1-009
 - 【输入】API_CONTRACT §3.10/3.11、M0-004 线框
@@ -438,3 +438,5 @@ M0-005 ──► M0-006 ──►（放行 M1）──────────�
 | 同日 v3.27 | iOS 提交 M1-009（docs/handoffs/M1-009.md）：ItemDetailStore/ItemDetailView/TimelineView/TimelineCellView/PhotoPreviewView 5 新文件 + 收藏柜接线（卡片点击进详情、返回回刷、onChange(showDetail)）+ ItemDetailPlaceholderView 移除 + APIDTOs 追加 §3.7/3.12 + pbxproj 增删注册；静态自检 30/30 PASS；状态 → REVIEW，构建证据待推送后 CI |
 | 同日 v3.28 | 总控初审 M1-009 通过（三接口并行、notFound、日期三态、多图顺序、B7 预览、服务端 dayCount）；裁决：入手信息不单独成行=同意（原则 9）、预览关闭按钮=接受 → REVIEW 待 CI + QA |
 | 同日 v3.29 | M1-009 CI 真绿一次通过（run #33946900102：BUILD SUCCEEDED + 全步骤 success）→ **DONE**（A14~A16/B09/B10 并入 M1-012 主链核验）。解锁 M1-010 → READY |
+| 同日 v3.30 | iOS 提交 M1-010（docs/handoffs/M1-010.md）：RecordView/RecordStore 2 新文件（默认表单三样、多选顺序上传、失败张单独重试、补录日期未动不传、Stepper 时长、防连点、放弃确认）+ 详情页接线（真记录 sheet/保存成功 toast/sensoryFeedback/onDismiss 回刷）+ APIDTOs 追加 §3.11 + pbxproj 注册 Records 分组；静态自检 30/30 PASS；状态 → REVIEW，构建证据待推送后 CI |
+| 同日 v3.31 | 总控初审 M1-010 通过（照片状态机/顺序上传/单张重试/日期未动不传/防连点/放弃确认/未来灰置）→ REVIEW 待 CI + QA（A12~A16/B02/B04/B14 + 10s 观察） |
