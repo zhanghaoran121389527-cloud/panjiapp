@@ -26,8 +26,8 @@
 | M1-006 | 网络层 + 登录/昵称流程 | iOS | M0-003, M0-004, M1-002 | DONE |
 | M1-007 | 收藏柜 | iOS | M1-003, M1-006 | DONE |
 | M1-008 | 创建玩物（创建后自动进详情） | iOS | M1-003, M1-004, M1-006, M1-007 | DONE |
-| M1-009 | 玩物详情 + 成长时间轴 | iOS | M1-003, M1-005, M1-006, M1-007 | REVIEW |
-| M1-010 | 盘玩记录（多图 + 补录） | iOS | M1-004, M1-005, M1-006, M1-009 | BACKLOG |
+| M1-009 | 玩物详情 + 成长时间轴 | iOS | M1-003, M1-005, M1-006, M1-007 | DONE |
+| M1-010 | 盘玩记录（多图 + 补录） | iOS | M1-004, M1-005, M1-006, M1-009 | READY |
 | M1-011 | 编辑/删除玩物 | iOS | M1-003, M1-004, M1-006, M1-008, M1-009 | BACKLOG |
 | M1-012 | M1 主链真机验收（20 步） | QA | M1-001~M1-011, M0-006 | BACKLOG |
 
@@ -437,3 +437,4 @@ M0-005 ──► M0-006 ──►（放行 M1）──────────�
 | 同日 v3.26 | M1-008 二次修复后 CI **真绿**（run #33510273974：BUILD SUCCEEDED + STEP4_ALL_OK，总控实读确认）→ **DONE**（QA 静态冒烟保留，交互计时并入 M1-012）。解锁 M1-009 派发 |
 | 同日 v3.27 | iOS 提交 M1-009（docs/handoffs/M1-009.md）：ItemDetailStore/ItemDetailView/TimelineView/TimelineCellView/PhotoPreviewView 5 新文件 + 收藏柜接线（卡片点击进详情、返回回刷、onChange(showDetail)）+ ItemDetailPlaceholderView 移除 + APIDTOs 追加 §3.7/3.12 + pbxproj 增删注册；静态自检 30/30 PASS；状态 → REVIEW，构建证据待推送后 CI |
 | 同日 v3.28 | 总控初审 M1-009 通过（三接口并行、notFound、日期三态、多图顺序、B7 预览、服务端 dayCount）；裁决：入手信息不单独成行=同意（原则 9）、预览关闭按钮=接受 → REVIEW 待 CI + QA |
+| 同日 v3.29 | M1-009 CI 真绿一次通过（run #33946900102：BUILD SUCCEEDED + 全步骤 success）→ **DONE**（A14~A16/B09/B10 并入 M1-012 主链核验）。解锁 M1-010 → READY |
