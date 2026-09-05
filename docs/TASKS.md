@@ -370,6 +370,7 @@
 - 【QA要求】编辑/删除冒烟项（E01~E07）
 - 【交接对象】QA
 - 【审核记录·总控初审】实读核验：CreateItemStore 双模式（编辑预填 + hasChanges 全字段比对无变化禁用 + PATCH 整单重发=契约 3.8 合法 + delete() 204 逻辑删除 + 404 文案「内容不存在或已被删除」）✓；删除确认弹窗文案沿用 DS §6.9 ✓；BeijingDate.swift 四方法收敛三处引用（QA 观察项闭环）✓；APIClient.delete（无响应体 204）✓。裁决：整单重发=接受（未动字段回传原值、清空传 null，契约合法）；删除文案=接受。**剩余 = 云端 CI 构建证据（推送后）+ QA（E01~E07）**。
+- 【审核记录·退回】CI 捕获编译错误：run #33966334622 **BUILD FAILED**——`ItemDetailView.swift:61:34: cannot find 'dismiss' in scope`：编辑 sheet 的 `onDeleted: { dismiss() }` 使用了 dismiss，但 ItemDetailView 未声明 `@Environment(\.dismiss)`。→ **退回 iOS 整改**：补 `@Environment(\.dismiss) private var dismiss`（详情页由收藏柜 push，dismiss 即弹回收藏柜，符合验收③意图）。修复后重推重跑。
 
 ### M1-012【QA】M1 主链真机验收（20 步）
 - 【任务编号】M1-012
