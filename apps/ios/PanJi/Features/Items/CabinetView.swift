@@ -87,12 +87,12 @@ struct CabinetView: View {
             #endif
         }
         .sheet(isPresented: $showCreate) {
-            CreateItemView(session: session) { item in
+            CreateItemView(session: session, onSaved: { item in
                 showCreate = false
                 detailItem = item
                 showDetail = true
                 Task { await store.refresh() }
-            }
+            })
         }
         .navigationDestination(isPresented: $showDetail) {
             if let detailItem {

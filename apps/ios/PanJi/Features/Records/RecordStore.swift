@@ -17,7 +17,7 @@ final class RecordStore {
     var content = ""
     var method = ""
     var durationMinutes = 0                 // 0 = 未记录（线框 06：0/未动 = null）
-    var recordedDate = RecordStore.beijingTodayDate()
+    var recordedDate = BeijingDate.todayDate()
     private(set) var dateChanged = false
     private(set) var submitting = false
     var photoError = false                  // 「这张没传成功，点按重试」行内提示
@@ -25,8 +25,6 @@ final class RecordStore {
 
     private let session: SessionStore
     let itemId: String
-
-    private static let beijingTimeZone = TimeZone(identifier: "Asia/Shanghai")!
 
     init(session: SessionStore, itemId: String) {
         self.session = session
@@ -105,7 +103,7 @@ final class RecordStore {
                 content: trimmedContent,
                 durationMinutes: durationMinutes > 0 ? durationMinutes : nil,
                 method: Self.nilIfBlank(method),
-                recordedDate: dateChanged ? Self.dateString(from: recordedDate) : nil)
+                recordedDate: dateChanged ? BeijingDate.string(from: recordedDate) : nil)
             let response: RecordResponse = try await APIClient.shared.request(
                 method: "POST", path: "/items/\(itemId)/records", body: request, token: session.token)
             return response.record
@@ -152,26 +150,7 @@ final class RecordStore {
         return response.url
     }
 
-    // MARK: 北京时间工具（裁决 A8/A13；与 CreateItemStore 同规则，M1 规模内不提取公共层）
-
-    static func endOfBeijingToday() -> Date {
-        var calendar = Calendar(identifier: .gregorian)
-        calendar.timeZone = beijingTimeZone
-        return calendar.startOfDay(for: Date()).addingTimeInterval(86_399)
-    }
-
-    static func beijingTodayDate() -> Date {
-        var calendar = Calendar(identifier: .gregorian)
-        calendar.timeZone = beijingTimeZone
-        return calendar.startOfDay(for: Date())
-    }
-
-    static func dateString(from date: Date) -> String {
-        var calendar = Calendar(identifier: .gregorian)
-        calendar.timeZone = beijingTimeZone
-        let components = calendar.dateComponents([.year, .month, .day], from: date)
-        return String(format: "%04d-%02d-%02d", components.year ?? 0, components.month ?? 0, components.day ?? 0)
-    }
+    // MARK: 北京时间（裁决 A8/A13；统一使用 Features/Items/BeijingDate.swift）
 
     private static func nilIfBlank(_ text: String) -> String? {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)

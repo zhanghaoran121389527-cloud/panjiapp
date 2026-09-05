@@ -9,7 +9,7 @@ struct ItemDetailView: View {
 
     @State private var store: ItemDetailStore
     @State private var showRecord = false
-    @State private var showEditPlaceholder = false
+    @State private var showEdit = false
     @State private var showSavedToast = false
 
     init(session: SessionStore, itemId: String) {
@@ -38,7 +38,9 @@ struct ItemDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button("编辑") { showEditPlaceholder = true }   // 验收⑤ 编辑入口可达
+                Button("编辑") {
+                    if store.item != nil { showEdit = true }
+                }
             }
         }
         .sheet(isPresented: $showRecord, onDismiss: {
@@ -48,8 +50,16 @@ struct ItemDetailView: View {
                 showSavedToast = true
             }
         }
-        .sheet(isPresented: $showEditPlaceholder) {
-            EditPlaceholderView()
+        .sheet(isPresented: $showEdit, onDismiss: {
+            Task { await store.refresh() }   // 编辑保存后详情同步刷新（验收①）
+        }) {
+            if let item = store.item {
+                EditItemView(
+                    session: session,
+                    item: item,
+                    onSaved: { showSavedToast = true },
+                    onDeleted: { dismiss() })   // 删除成功：详情一并返回收藏柜（验收③）
+            }
         }
         .overlay(alignment: .bottom) {
             if showSavedToast {
@@ -246,28 +256,5 @@ private struct SkeletonBlock: View {
             .opacity(pulse ? 1.0 : 0.6)
             .animation(.easeInOut(duration: 1).repeatForever(autoreverses: true), value: pulse)
             .onAppear { pulse = true }
-    }
-}
-
-/// 编辑入口临时占位（M1-011 以真实编辑页替换）
-private struct EditPlaceholderView: View {
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        NavigationStack {
-            ZStack {
-                Color.PanJi.background.ignoresSafeArea()
-                Text("编辑玩物将在 M1-011 实现")
-                    .font(Font.PanJi.secondary)
-                    .foregroundStyle(Color.PanJi.textSecondary)
-            }
-            .navigationTitle("编辑玩物")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("关闭") { dismiss() }
-                }
-            }
-        }
     }
 }

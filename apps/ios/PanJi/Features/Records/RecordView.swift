@@ -163,7 +163,7 @@ struct RecordView: View {
                 selection: Binding(
                     get: { store.recordedDate },
                     set: { store.setRecordedDate($0) }),
-                in: ...RecordStore.endOfBeijingToday(),   // 上限=北京今天，未来日期灰置（验收⑤）
+                in: ...BeijingDate.endOfToday(),   // 上限=北京今天，未来日期灰置（验收⑤）
                 displayedComponents: .date)
                 .labelsHidden()
         }

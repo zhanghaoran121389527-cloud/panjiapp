@@ -23,11 +23,7 @@ struct APIClient {
         body: (any Encodable)? = nil,
         token: String? = nil
     ) async throws -> T {
-        var url = baseURL.appendingPathComponent("v1")
-        for component in path.split(separator: "/") {
-            url.appendPathComponent(String(component))
-        }
-        var request = URLRequest(url: url)
+        var request = URLRequest(url: makeURL(path: path))
         request.httpMethod = method
         if let token {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
@@ -37,6 +33,35 @@ struct APIClient {
             request.httpBody = try JSONEncoder().encode(body)
         }
         return try await perform(request)
+    }
+
+    /// 无响应体请求（契约 3.9：DELETE 204）
+    func delete(path: String, token: String?) async throws {
+        var request = URLRequest(url: makeURL(path: path))
+        request.httpMethod = "DELETE"
+        if let token {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+        let (data, response): (Data, URLResponse)
+        do {
+            (data, response) = try await session.data(for: request)
+        } catch {
+            throw APIError.networkUnreachable
+        }
+        guard let http = response as? HTTPURLResponse else {
+            throw APIError.invalidResponse
+        }
+        guard (200..<300).contains(http.statusCode) else {
+            throw Self.serverError(from: data, statusCode: http.statusCode)
+        }
+    }
+
+    private func makeURL(path: String) -> URL {
+        var url = baseURL.appendingPathComponent("v1")
+        for component in path.split(separator: "/") {
+            url.appendPathComponent(String(component))
+        }
+        return url
     }
 
     /// 静态图片相对路径（裁决 A3）解析为完整 URL；各页面用它加载 `/uploads/...` 图片，禁止自行拼 URL。

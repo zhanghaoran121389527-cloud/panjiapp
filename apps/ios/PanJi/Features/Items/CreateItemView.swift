@@ -1,27 +1,39 @@
 import SwiftUI
 import PhotosUI
 
-/// 创建玩物（线框 04 · 契约 3.6/3.10）：封面（强引导可跳过）→ 名称/品类必填 → 「更多信息」折叠。
-/// 创建成功回调 `onCreated`，由收藏柜关闭 sheet 并自动进入详情（验收②）。
+/// 玩物表单（线框 04/07 · 契约 3.6/3.8/3.9/3.10）。
+/// 双模式：创建（POST，打开即聚焦名称）与编辑（PATCH，预填当前值、无变化禁用保存、含删除入口）。
+/// 保存成功回调 `onSaved`；编辑删除成功回调 `onDeleted`（详情页一并返回收藏柜）。
 @MainActor
 struct CreateItemView: View {
     let session: SessionStore
-    let onCreated: (ItemDTO) -> Void
+    let onSaved: (ItemDTO) -> Void
+    var item: ItemDetailDTO? = nil
+    var onDeleted: (() -> Void)? = nil
 
     @Environment(\.dismiss) private var dismiss
 
     @State private var store: CreateItemStore
     @State private var showMore = false
     @State private var coverPickerItem: PhotosPickerItem?
+    @State private var showDiscardConfirm = false
+    @State private var showDeleteConfirm = false
     @FocusState private var nameFocused: Bool
     @FocusState private var subcategoryFocused: Bool
     @FocusState private var sizeFocused: Bool
     @FocusState private var notesFocused: Bool
 
-    init(session: SessionStore, onCreated: @escaping (ItemDTO) -> Void) {
+    init(session: SessionStore,
+         onSaved: @escaping (ItemDTO) -> Void,
+         item: ItemDetailDTO? = nil,
+         onDeleted: (() -> Void)? = nil) {
         self.session = session
-        self.onCreated = onCreated
-        _store = State(initialValue: CreateItemStore(session: session))
+        self.onSaved = onSaved
+        self.item = item
+        self.onDeleted = onDeleted
+        let store = CreateItemStore(session: session, editingItem: item)
+        _store = State(initialValue: store)
+        _showMore = State(initialValue: store.shouldExpandMore)
     }
 
     var body: some View {
@@ -32,7 +44,7 @@ struct CreateItemView: View {
                     nameField
                     categoryField
                     moreInfoSection
-                    if let error = store.createError {
+                    if let error = store.saveError {
                         Text(error)
                             .font(Font.PanJi.caption)
                             .foregroundStyle(Color.PanJi.danger)
@@ -41,21 +53,68 @@ struct CreateItemView: View {
                 .padding(CGFloat.PanJi.spaceL)
             }
             .safeAreaInset(edge: .bottom) {
-                createButton
+                bottomArea
                     .padding(.horizontal, CGFloat.PanJi.spaceL)
                     .padding(.top, CGFloat.PanJi.spaceS)
                     .padding(.bottom, CGFloat.PanJi.spaceL)
                     .background(Color.PanJi.background)
             }
-            .navigationTitle("新建玩物")
+            .navigationTitle(store.isEditing ? "编辑玩物" : "新建玩物")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("取消") { dismiss() }
+                    if store.isEditing {
+                        Button {
+                            if store.hasChanges {
+                                showDiscardConfirm = true
+                            } else {
+                                dismiss()
+                            }
+                        } label: {
+                            Image(systemName: "xmark")
+                        }
+                    } else {
+                        Button("取消") { dismiss() }
+                    }
                 }
             }
+            .confirmationDialog("放弃修改？", isPresented: $showDiscardConfirm, titleVisibility: .visible) {
+                Button("放弃", role: .destructive) { dismiss() }
+                Button("继续编辑", role: .cancel) {}
+            }
+            .confirmationDialog(
+                "删除“\(store.editingItemName ?? "")”？",
+                isPresented: $showDeleteConfirm,
+                titleVisibility: .visible
+            ) {
+                Button("删除", role: .destructive) { delete() }
+                Button("取消", role: .cancel) {}
+            } message: {
+                Text("它的全部记录和照片会一起删除，无法恢复。")
+            }
+            .overlay(alignment: .bottom) {
+                if let deleteError = store.deleteError {
+                    HStack(spacing: CGFloat.PanJi.spaceS) {
+                        Image(systemName: "exclamationmark.circle.fill")
+                        Text(deleteError)
+                    }
+                    .font(.body.weight(.semibold))
+                    .foregroundStyle(Color.PanJi.background)
+                    .padding(.horizontal, CGFloat.PanJi.spaceL)
+                    .padding(.vertical, CGFloat.PanJi.spaceM)
+                    .background(Capsule().fill(Color.PanJi.textPrimary))
+                    .padding(.bottom, CGFloat.PanJi.spaceXXL)
+                    .transition(.opacity)
+                }
+            }
+            .task(id: store.deleteError) {
+                guard store.deleteError != nil else { return }
+                try? await Task.sleep(for: .seconds(2))
+                store.deleteError = nil
+            }
             .task {
-                try? await Task.sleep(for: .milliseconds(400))  // sheet 弹出后再聚焦，键盘稳定升起
+                if store.isEditing { return }   // 编辑页不自动聚焦（线框 07：用户先看后改）
+                try? await Task.sleep(for: .milliseconds(400))
                 nameFocused = true
             }
             .task { await store.loadCategories() }
@@ -71,45 +130,17 @@ struct CreateItemView: View {
                     .fill(Color.PanJi.accentSoft)
                     .frame(height: 200)
                 if let data = store.coverData, let image = UIImage(data: data) {
-                    Image(uiImage: image)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(height: 200)
-                        .clipShape(RoundedRectangle(cornerRadius: CGFloat.PanJi.radiusL))
-                        .overlay(alignment: .topTrailing) {
-                            Button("移除") {
-                                store.removeCover()
-                            }
-                            .font(Font.PanJi.caption)
-                            .foregroundStyle(Color.PanJi.danger)
-                            .padding(.horizontal, CGFloat.PanJi.spaceM)
-                            .padding(.vertical, CGFloat.PanJi.spaceS)
-                            .background(Capsule().fill(Color.PanJi.surface.opacity(0.9)))
-                            .padding(CGFloat.PanJi.spaceS)
+                    coverPreview(image: Image(uiImage: image))
+                } else if let path = store.coverURL, let url = APIClient.shared.imageURL(for: path) {
+                    AsyncImage(url: url) { phase in
+                        if case .success(let image) = phase {
+                            coverPreview(image: image)
+                        } else {
+                            addCoverHint
                         }
-                        .overlay(alignment: .bottomTrailing) {
-                            PhotosPicker(selection: $coverPickerItem, matching: .images) {
-                                Text("更换")
-                                    .font(Font.PanJi.caption.weight(.semibold))
-                                    .foregroundStyle(Color.PanJi.onAccent)
-                                    .padding(.horizontal, CGFloat.PanJi.spaceM)
-                                    .padding(.vertical, CGFloat.PanJi.spaceS)
-                                    .background(Capsule().fill(Color.PanJi.accent))
-                            }
-                            .padding(CGFloat.PanJi.spaceS)
-                        }
-                } else {
-                    VStack(spacing: CGFloat.PanJi.spaceS) {
-                        Image(systemName: "camera")
-                            .font(.system(size: 32))
-                            .foregroundStyle(Color.PanJi.accent)
-                        Text("添加封面")
-                            .font(Font.PanJi.secondary)
-                            .foregroundStyle(Color.PanJi.textSecondary)
-                        Text("（可跳过）")
-                            .font(Font.PanJi.caption)
-                            .foregroundStyle(Color.PanJi.textTertiary)
                     }
+                } else {
+                    addCoverHint
                 }
             }
         }
@@ -128,6 +159,52 @@ struct CreateItemView: View {
                     .font(Font.PanJi.caption)
                     .foregroundStyle(Color.PanJi.danger)
                     .padding(.bottom, -CGFloat.PanJi.spaceL)
+            }
+        }
+    }
+
+    private func coverPreview(image: Image) -> some View {
+        image
+            .resizable()
+            .scaledToFill()
+            .frame(height: 200)
+            .clipShape(RoundedRectangle(cornerRadius: CGFloat.PanJi.radiusL))
+            .overlay(alignment: .topTrailing) {
+                Button("移除") {
+                    store.removeCover()
+                }
+                .font(Font.PanJi.caption)
+                .foregroundStyle(Color.PanJi.danger)
+                .padding(.horizontal, CGFloat.PanJi.spaceM)
+                .padding(.vertical, CGFloat.PanJi.spaceS)
+                .background(Capsule().fill(Color.PanJi.surface.opacity(0.9)))
+                .padding(CGFloat.PanJi.spaceS)
+            }
+            .overlay(alignment: .bottomTrailing) {
+                PhotosPicker(selection: $coverPickerItem, matching: .images) {
+                    Text("更换")
+                        .font(Font.PanJi.caption.weight(.semibold))
+                        .foregroundStyle(Color.PanJi.onAccent)
+                        .padding(.horizontal, CGFloat.PanJi.spaceM)
+                        .padding(.vertical, CGFloat.PanJi.spaceS)
+                        .background(Capsule().fill(Color.PanJi.accent))
+                }
+                .padding(CGFloat.PanJi.spaceS)
+            }
+    }
+
+    private var addCoverHint: some View {
+        VStack(spacing: CGFloat.PanJi.spaceS) {
+            Image(systemName: "camera")
+                .font(.system(size: 32))
+                .foregroundStyle(Color.PanJi.accent)
+            Text("添加封面")
+                .font(Font.PanJi.secondary)
+                .foregroundStyle(Color.PanJi.textSecondary)
+            if !store.isEditing {
+                Text("（可跳过）")
+                    .font(Font.PanJi.caption)
+                    .foregroundStyle(Color.PanJi.textTertiary)
             }
         }
     }
@@ -185,7 +262,7 @@ struct CreateItemView: View {
         }
     }
 
-    // MARK: 更多信息（折叠）
+    // MARK: 更多信息（折叠；编辑模式有已填项时默认展开）
 
     private var moreInfoSection: some View {
         VStack(alignment: .leading, spacing: CGFloat.PanJi.spaceM) {
@@ -245,7 +322,7 @@ struct CreateItemView: View {
                         selection: Binding(
                             get: { date },
                             set: { store.acquiredDate = $0 }),
-                        in: ...CreateItemStore.endOfBeijingToday(),
+                        in: ...BeijingDate.endOfToday(),
                         displayedComponents: .date)
                         .labelsHidden()
                     Button("清除") { store.acquiredDate = nil }
@@ -260,23 +337,42 @@ struct CreateItemView: View {
         }
     }
 
-    // MARK: 主按钮
+    // MARK: 底部：保存 + 删除（编辑模式）
 
-    private var createButton: some View {
-        Button {
-            submit()
-        } label: {
-            if store.submitting {
-                HStack(spacing: CGFloat.PanJi.spaceS) {
-                    ProgressView().tint(Color.PanJi.onAccent)
-                    Text(store.uploadingCover ? "上传封面中…" : "创建中…")
+    private var bottomArea: some View {
+        VStack(spacing: CGFloat.PanJi.spaceM) {
+            Button {
+                submit()
+            } label: {
+                if store.submitting {
+                    HStack(spacing: CGFloat.PanJi.spaceS) {
+                        ProgressView().tint(Color.PanJi.onAccent)
+                        Text(submittingText)
+                    }
+                } else {
+                    Text(store.isEditing ? "保存" : "创建")
                 }
-            } else {
-                Text("创建")
+            }
+            .buttonStyle(PanJiPrimaryButtonStyle())
+            .disabled(!store.canSubmit)
+
+            if store.isEditing {
+                Button {
+                    showDeleteConfirm = true
+                } label: {
+                    Text(store.deleting ? "删除中…" : "删除玩物")
+                        .font(Font.PanJi.body)
+                        .foregroundStyle(Color.PanJi.danger)
+                        .frame(maxWidth: .infinity)
+                }
+                .disabled(store.deleting || store.submitting)
             }
         }
-        .buttonStyle(PanJiPrimaryButtonStyle())
-        .disabled(!store.canSubmit)
+    }
+
+    private var submittingText: String {
+        if store.isEditing { return "保存中…" }
+        return store.uploadingCover ? "上传封面中…" : "创建中…"
     }
 
     private func submit() {
@@ -284,7 +380,15 @@ struct CreateItemView: View {
         nameFocused = false
         Task { @MainActor in
             if let item = await store.submit() {
-                onCreated(item)
+                onSaved(item)
+            }
+        }
+    }
+
+    private func delete() {
+        Task { @MainActor in
+            if await store.delete() {
+                onDeleted?()   // 详情页回调：关闭编辑页并返回收藏柜（线框 07）
             }
         }
     }

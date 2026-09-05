@@ -31,6 +31,8 @@
 		C10000000000000000000018 /* PhotoPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000001B /* PhotoPreviewView.swift */; };
 		C10000000000000000000019 /* RecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000001C /* RecordView.swift */; };
 		C1000000000000000000001A /* RecordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000001D /* RecordStore.swift */; };
+		C1000000000000000000001B /* EditItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000001E /* EditItemView.swift */; };
+		C1000000000000000000001C /* BeijingDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000001F /* BeijingDate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,6 +63,8 @@
 		A1000000000000000000001B /* PhotoPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPreviewView.swift; sourceTree = "<group>"; };
 		A1000000000000000000001C /* RecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordView.swift; sourceTree = "<group>"; };
 		A1000000000000000000001D /* RecordStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordStore.swift; sourceTree = "<group>"; };
+		A1000000000000000000001E /* EditItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditItemView.swift; sourceTree = "<group>"; };
+		A1000000000000000000001F /* BeijingDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeijingDate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -165,6 +169,8 @@
 				A10000000000000000000019 /* TimelineView.swift */,
 				A1000000000000000000001A /* TimelineCellView.swift */,
 				A1000000000000000000001B /* PhotoPreviewView.swift */,
+				A1000000000000000000001E /* EditItemView.swift */,
+				A1000000000000000000001F /* BeijingDate.swift */,
 			);
 			path = Items;
 			sourceTree = "<group>";
@@ -295,6 +301,8 @@
 				C10000000000000000000018 /* PhotoPreviewView.swift in Sources */,
 				C10000000000000000000019 /* RecordView.swift in Sources */,
 				C1000000000000000000001A /* RecordStore.swift in Sources */,
+				C1000000000000000000001B /* EditItemView.swift in Sources */,
+				C1000000000000000000001C /* BeijingDate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
