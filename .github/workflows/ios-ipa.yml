@@ -1,0 +1,57 @@
+# 盘迹真机安装包导出（B13 延伸：无 Mac 真机验收路径）
+# 手动触发：workflow_dispatch，输入 api_base_url = 开发机局域网 IP（如 http://192.168.1.100:3000）
+name: ios-ipa
+
+on:
+  workflow_dispatch:
+    inputs:
+      api_base_url:
+        description: 'API 根地址（真机访问开发机用局域网 IP）'
+        required: false
+        default: 'http://localhost:3000'
+
+jobs:
+  export-ipa:
+    runs-on: macos-15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: 注入真机 API 地址
+        if: inputs.api_base_url != ''
+        working-directory: apps/ios
+        run: |
+          URL="${{ inputs.api_base_url }}"
+          SAFE=$(printf '%s' "$URL" | sed 's#//#/\$()/#g')
+          sed -i.bak "s#^API_BASE_URL = .*#API_BASE_URL = $SAFE#" Config/Config.xcconfig
+          grep API_BASE_URL Config/Config.xcconfig
+
+      - name: 构建真机 Debug 包（不签名，Sideloadly 本地签名）
+        working-directory: apps/ios
+        run: |
+          set -o pipefail
+          xcodebuild -project PanJi.xcodeproj -scheme PanJi \
+            -configuration Debug \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath build/DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            build 2>&1 | tee build-ipa.log
+
+      - name: 打包 PanJi.ipa
+        working-directory: apps/ios
+        run: |
+          APP="build/DerivedData/Build/Products/Debug-iphoneos/PanJi.app"
+          ls -d "$APP"
+          mkdir -p Payload
+          cp -R "$APP" Payload/
+          zip -r -y PanJi.ipa Payload > /dev/null
+          ls -la PanJi.ipa
+
+      - name: 归档 ipa
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: panji-dev-ipa
+          path: |
+            apps/ios/PanJi.ipa
+            apps/ios/build-ipa.log
