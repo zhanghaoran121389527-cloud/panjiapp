@@ -447,3 +447,4 @@ M0-005 ──► M0-006 ──►（放行 M1）──────────�
 | 同日 v3.31 | 总控初审 M1-010 通过（照片状态机/顺序上传/单张重试/日期未动不传/防连点/放弃确认/未来灰置）→ REVIEW 待 CI + QA（A12~A16/B02/B04/B14 + 10s 观察） |
 | 同日 v3.32 | iOS 提交 M1-011（docs/handoffs/M1-011.md，M1 最后一个功能任务）：CreateItemStore/View 双模式化（编辑预填/hasChanges 无变化禁用/PATCH/删除入口+确认弹窗+404 处理）+ EditItemView/BeijingDate 新文件（时区收敛闭环 QA 观察项）+ 详情/收藏柜接线 + APIClient delete(204) + pbxproj 注册；静态自检 32/32 PASS；状态 → REVIEW，构建证据待推送后 CI |
 | 同日 v3.34 | 总控初审 M1-011 通过（双模式/hasChanges/整单重发合法/删除确认/404/时区收敛）→ REVIEW 待 CI + QA（E01~E07） |
+| 同日 v3.35 | **M1-011 退回整改**（CI 编译错误）：ItemDetailView onDeleted 闭包用 dismiss() 但视图未声明 @Environment(\.dismiss)。iOS 修复：补实例级声明、notFoundView 局部声明移除统一；全工程 dismiss 审计 4 文件全 PASS → 复报 REVIEW，待 CI 复跑 |

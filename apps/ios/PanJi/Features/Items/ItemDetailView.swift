@@ -7,6 +7,8 @@ struct ItemDetailView: View {
     let session: SessionStore
     let itemId: String
 
+    @Environment(\.dismiss) private var dismiss
+
     @State private var store: ItemDetailStore
     @State private var showRecord = false
     @State private var showEdit = false
@@ -224,8 +226,7 @@ struct ItemDetailView: View {
 
     /// 玩物已被删除（线框 05）：提示 + 返回收藏柜（返回后收藏柜自动刷新列表）
     private var notFoundView: some View {
-        @Environment(\.dismiss) var dismiss
-        return VStack(spacing: CGFloat.PanJi.spaceM) {
+        VStack(spacing: CGFloat.PanJi.spaceM) {
             ZStack {
                 Circle()
                     .fill(Color.PanJi.accentSoft)
