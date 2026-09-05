@@ -351,6 +351,7 @@
 - 【验收条件】① 默认表单只有照片/一句话/保存 ② 无照片可保存 ③ 多图顺序保持 ④ 补录历史日期后时间轴归位 ⑤ 日期选择上限=今天（北京时间）⑥ 连点保存仅一条（防重）⑦ 构建成功附日志
 - 【QA要求】A12~A16 主链步核对；B02/B04/B14 冒烟；10 秒体验观察项
 - 【交接对象】QA
+- 【审核记录·总控初审】实读核验：RecordStore 照片状态机（local/uploading/uploaded/failed）+ 按选择顺序逐张上传 + 失败张单独重试（已成功不重传）+ 无照片可保存 + 时长 0→null、方式 trim→null、日期未动不传（服务端默认）+ 防连点 + hasUnsavedChanges 放弃确认 ✓；RecordView 默认表单只有三样、DatePicker `in: ...endOfBeijingToday()`（未来灰置）、Stepper 0~1440 步进 5、confirmationDialog 放弃确认 ✓。北京时区工具与 CreateItemStore 重复持有=M1 规模内接受（M1-011 顺带收敛，已注明）。**剩余 = 云端 CI 构建证据（推送后）+ QA（A12~A16/B02/B04/B14 + 10s 观察）**。
 
 ### M1-011【iOS】编辑/删除玩物
 - 【任务编号】M1-011
