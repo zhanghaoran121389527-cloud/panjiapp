@@ -353,6 +353,7 @@
 - 【交接对象】QA
 - 【审核记录·总控初审】实读核验：RecordStore 照片状态机（local/uploading/uploaded/failed）+ 按选择顺序逐张上传 + 失败张单独重试（已成功不重传）+ 无照片可保存 + 时长 0→null、方式 trim→null、日期未动不传（服务端默认）+ 防连点 + hasUnsavedChanges 放弃确认 ✓；RecordView 默认表单只有三样、DatePicker `in: ...endOfBeijingToday()`（未来灰置）、Stepper 0~1440 步进 5、confirmationDialog 放弃确认 ✓。北京时区工具与 CreateItemStore 重复持有=M1 规模内接受（M1-011 顺带收敛，已注明）。**剩余 = 云端 CI 构建证据（推送后）+ QA（A12~A16/B02/B04/B14 + 10s 观察）**。
 - 【审核记录·CI+总控】run #33948349649（head ca00872，M1-010 全部代码）**真绿**：BUILD SUCCEEDED + STEP4_ALL_OK（总控实读 step4 回传日志确认）。总控批准 → **DONE**（QA 冒烟项并入 M1-012 主链）。解锁 M1-011（M1 最后一个功能任务）。
+- 【审核记录·QA补交】QA 正式复核补交 **PASS**（docs/handoffs/M1-010-QA.md）：CI 引用规范（run #33948349649 / head ca00872 + 本地交叉核对回传产物）；A12~A16 五步静态全 PASS；冒烟映射已按 v2.1 编号注明（B13/B02+B08/B16）；无阻断。观察项 4 条（串行上传耗时/照片数量无上限/时区工具未收敛/仅 ✕ 关闭）并入 M1-012。维持 DONE。
 
 ### M1-011【iOS】编辑/删除玩物
 - 【任务编号】M1-011
