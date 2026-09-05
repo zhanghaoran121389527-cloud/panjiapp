@@ -1,6 +1,6 @@
 {
   "APIBaseURL" => "http://localhost:3000"
-  "BuildMachineOSBuild" => "24G720"
+  "BuildMachineOSBuild" => "24G830"
   "CFBundleDevelopmentRegion" => "zh_CN"
   "CFBundleDisplayName" => "盘迹"
   "CFBundleExecutable" => "PanJi"

@@ -5,7 +5,7 @@ build/DerivedData/Build/Products/Debug-iphonesimulator/PanJi.app
 + tee built-info.plist.out
 {
   "APIBaseURL" => "http://localhost:3000"
-  "BuildMachineOSBuild" => "24G720"
+  "BuildMachineOSBuild" => "24G830"
   "CFBundleDevelopmentRegion" => "zh_CN"
   "CFBundleDisplayName" => "盘迹"
   "CFBundleExecutable" => "PanJi"
@@ -64,16 +64,16 @@ build/DerivedData/Build/Products/Debug-iphonesimulator/PanJi.app
 ++ grep -oE '\([0-9A-F-]{36}\)'
 ++ head -1
 ++ tr -d '()'
-+ DEVICE=9E2C2CF0-7DD4-4B9D-B6CE-63C9E42B95A7
-+ echo DEVICE=9E2C2CF0-7DD4-4B9D-B6CE-63C9E42B95A7
-DEVICE=9E2C2CF0-7DD4-4B9D-B6CE-63C9E42B95A7
-+ '[' -z 9E2C2CF0-7DD4-4B9D-B6CE-63C9E42B95A7 ']'
-+ xcrun simctl boot 9E2C2CF0-7DD4-4B9D-B6CE-63C9E42B95A7
-+ xcrun simctl install 9E2C2CF0-7DD4-4B9D-B6CE-63C9E42B95A7 build/DerivedData/Build/Products/Debug-iphonesimulator/PanJi.app
-+ xcrun simctl launch 9E2C2CF0-7DD4-4B9D-B6CE-63C9E42B95A7 com.panji.app
-com.panji.app: 4290
++ DEVICE=DF24883C-910C-42D6-A87A-531F98C777E2
++ echo DEVICE=DF24883C-910C-42D6-A87A-531F98C777E2
+DEVICE=DF24883C-910C-42D6-A87A-531F98C777E2
++ '[' -z DF24883C-910C-42D6-A87A-531F98C777E2 ']'
++ xcrun simctl boot DF24883C-910C-42D6-A87A-531F98C777E2
++ xcrun simctl install DF24883C-910C-42D6-A87A-531F98C777E2 build/DerivedData/Build/Products/Debug-iphonesimulator/PanJi.app
++ xcrun simctl launch DF24883C-910C-42D6-A87A-531F98C777E2 com.panji.app
+com.panji.app: 11575
 + sleep 5
-+ xcrun simctl io 9E2C2CF0-7DD4-4B9D-B6CE-63C9E42B95A7 screenshot m0-003-simulator.png
++ xcrun simctl io DF24883C-910C-42D6-A87A-531F98C777E2 screenshot m0-003-simulator.png
 Detected file type 'PNG' from extension
 Wrote screenshot to: m0-003-simulator.png
 + echo STEP4_ALL_OK
